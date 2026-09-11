@@ -11,13 +11,18 @@ ecosystem — some are real separate apps/repos, some are just pages on the hub 
 
 | Card | Where it lives | Repo |
 |---|---|---|
-| Darkroom | `ericgitonga.com/darkroom` | page in [eric-gitonga-links](https://github.com/ericgitonga/eric-gitonga-links) — placeholder |
-| Dev | `ericgitonga.com/dev` | page in [eric-gitonga-links](https://github.com/ericgitonga/eric-gitonga-links) — real content |
-| Doodles | `ericgitonga.com/doodles` | page in [eric-gitonga-links](https://github.com/ericgitonga/eric-gitonga-links) — placeholder |
+| Daguerreotypes | `ericgitonga.com/daguerreotypes` | page in [eric-gitonga-links](https://github.com/ericgitonga/eric-gitonga-links) — placeholder |
+| Daubs | `ericgitonga.com/daubs` | page in [eric-gitonga-links](https://github.com/ericgitonga/eric-gitonga-links) — placeholder |
+| Diffs | `ericgitonga.com/diffs` | page in [eric-gitonga-links](https://github.com/ericgitonga/eric-gitonga-links) — real content |
 | Dudus | `dudus.ericgitonga.com` | [dudus-app](https://github.com/ericgitonga/dudus-app) — a real, separate deployment |
 | ↳ Shop | `shop.dudus.ericgitonga.com` | [dudu-merchandise](https://github.com/ericgitonga/dudu-merchandise) — nested under Dudus, not a top-level card |
 
-Darkroom/Dev/Doodles are paths rather than real subdomains because they're just pages within
+Each card name is the craft's own term of art, not a generic label: Daguerreotypes (the historic
+photographic process), Daubs (the painter's own word for informal work — covers watercolours as
+well as sketches), Diffs (the developer's word for comparing versions), Dudus (Kenyan slang for
+insects).
+
+Daguerreotypes/Daubs/Diffs are paths rather than real subdomains because they're just pages within
 eric-gitonga-links, not separate deployments — see that repo's README for why a `vercel.json`
 host-based rewrite was tried and abandoned in favor of paths. Dudus and its nested Shop are real
 subdomains because those are genuinely separate apps.

@@ -1,5 +1,6 @@
-# eric-gitonga-links
+# apps/hub
 
-Read `README.md` for what this project is and how it's structured, and `ONBOARDING.md` for the
-workflow conventions (issue-first, branch+PR, confirm-before-merge) — follow both on every
-change, no matter how small.
+Part of the `ericgitonga-com` monorepo (migrated from the standalone `eric-gitonga-links` repo).
+Read this directory's `README.md` for what this app is and how it's structured, and the **repo
+root's** `ONBOARDING.md` for the shared workflow conventions (issue-first, branch+PR,
+confirm-before-merge) — those now apply monorepo-wide, not just to this app.

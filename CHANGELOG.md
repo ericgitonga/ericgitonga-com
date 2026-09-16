@@ -7,6 +7,13 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.3.2] - 2026-09-16
+
+### Added
+
+- Fix PLATE numbering in pages after the Dudus move.
+
+
 ## [0.3.1] - 2026-09-16
 
 ### Added

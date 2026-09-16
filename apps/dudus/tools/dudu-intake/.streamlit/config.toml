@@ -1,0 +1,9 @@
+# Pins the local intake tool to loopback-only so it can't accidentally bind to
+# 0.0.0.0/all interfaces regardless of how it's launched (e.g. `streamlit run app.py
+# --server.address 0.0.0.0`, or a future systemd/launchd unit). This tool has no login
+# layer and automates branch -> PR -> CI-poll -> squash-merge to `main` using the
+# operator's own gh/git credentials, so its "local-only" status must be enforced here,
+# not left to convention. See repos-security-audit.md finding (dudus-app, item 8) and
+# issue #80.
+[server]
+address = "127.0.0.1"

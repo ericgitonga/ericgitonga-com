@@ -1,0 +1,33 @@
+name: Unit (dudu-intake)
+
+# Gates a PR on tools/dudu-intake's pytest unit suite (tools/dudu-intake/tests/) — fast,
+# pure-logic coverage of app.py's parsing/lookup helpers, alongside (not instead of) the tool's
+# existing streamlit.testing.v1.AppTest/manual verification. This tool is never built or
+# deployed with the rest of the site and is versioned independently (see
+# tools/dudu-intake/CHANGELOG.md), but this job still runs unconditionally on every PR — not
+# path-filtered to tools/dudu-intake/** — because it's registered as a required status check
+# below: a path-filtered trigger would leave that check permanently "expected" on any PR that
+# doesn't touch this tool, blocking merge. It's cheap enough (pip install + pytest, no browser)
+# that running it unconditionally costs nothing meaningful.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  unit-dudu-intake:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/dudu-intake
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -r requirements-dev.txt
+
+      - name: Run unit test suite
+        run: pytest -v

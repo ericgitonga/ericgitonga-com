@@ -5,8 +5,12 @@ The monorepo for [ericgitonga.com](https://ericgitonga.com) — one app per subd
 
 This started as a coordination-only repo (cross-cutting issues, decisions, the shared brand kit)
 while the actual code lived in three separate repos. It's now being migrated into an actual
-monorepo, one app at a time — `apps/hub` first, as a trial run, before deciding whether the other
-two follow.
+monorepo, one app at a time — `apps/hub` went first, as a trial run: migrated with full commit
+history preserved, verified building correctly from its new location, then the live
+`ericgitonga.com` Vercel project was repointed at this repo (Root Directory `apps/hub`) and
+promoted to production. The old `eric-gitonga-links` repo is archived. Any future push to this
+repo's `main` that touches `apps/hub/**` now auto-deploys via Vercel's GitHub integration.
+`dudus-app`/`dudu-merchandise` migrating too is a separate decision, not yet made.
 
 ## Apps in this repo
 

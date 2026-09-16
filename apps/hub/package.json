@@ -1,0 +1,9 @@
+{
+  "name": "eric-gitonga-links",
+  "private": true,
+  "dependencies": {
+    "@vercel/blob": "^2.8.0",
+    "basic-ftp": "^6.2.1",
+    "sharp": "^0.35.4"
+  }
+}

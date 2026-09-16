@@ -1,0 +1,302 @@
+<title>Dudus — Eric Gitonga</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,500;0,600;1,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="description" content="All about Kenya's tiniest wildlife — a portrait gallery and an identification companion, both built around the same photographs.">
+
+<style>
+  :root{
+    --ground:#f3efe3;
+    --ground-raised:#ece4cf;
+    --ink:#241f16;
+    --ink-muted:#7a7160;
+    --accent:#3f6b53;
+    --accent-dim:#8ba38f;
+    --line:#d9cfb8;
+    --serif:'Newsreader', Georgia, 'Times New Roman', serif;
+    --label:'Archivo Narrow', 'Arial Narrow', sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--label);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+  }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  .topbar{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:.6rem 1.5rem;
+    padding:1.3rem 1.8rem;
+    border-bottom:1px solid var(--line);
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:var(--ground);
+  }
+  .topbar-home{
+    justify-self:start;
+    font-family:var(--mono);
+    font-size:.82rem;
+    font-weight:600;
+    letter-spacing:.22em;
+    color:var(--ink);
+    transition:color .15s ease;
+  }
+  a.topbar-home:hover, a.topbar-home:focus-visible{color:var(--accent);}
+  .topbar-plates{
+    justify-self:center;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:1.25rem;
+  }
+  .topbar-plates a, .topbar-plates span{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:500;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    transition:color .15s ease;
+  }
+  .topbar-plates a:hover, .topbar-plates a:focus-visible{color:var(--accent);}
+  .topbar-plates [aria-current="page"]{color:var(--ink);}
+  .topbar-links{
+    justify-self:end;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:1.4rem;
+  }
+  .topbar-links a{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.18em;
+    color:var(--ink-muted);
+    transition:color .15s ease;
+  }
+  .topbar-links a:hover, .topbar-links a:focus-visible{color:var(--accent);}
+  .topbar-links [aria-current="page"]{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.18em;
+    color:var(--ink);
+  }
+
+  @media (max-width:760px){
+    .topbar{
+      grid-template-columns:1fr;
+      justify-items:center;
+      text-align:center;
+    }
+    .topbar-home, .topbar-plates, .topbar-links{justify-self:center;}
+  }
+
+  .page{
+    max-width:680px;
+    margin:0 auto;
+    padding:clamp(2.5rem,6vw,4rem) clamp(1.25rem,4vw,1.5rem) 4rem;
+  }
+
+  .plate-no{
+    display:block;
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.14em;
+    color:var(--ink-muted);
+    margin-bottom:.5rem;
+  }
+
+  h1{
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(2.4rem,7vw,3.2rem);
+    line-height:1.05;
+    margin:0 0 .7rem;
+    text-wrap:balance;
+  }
+
+  .intro{
+    font-family:var(--serif);
+    font-size:1.05rem;
+    color:var(--ink-muted);
+    max-width:36em;
+    margin:0;
+    line-height:1.5;
+  }
+
+  section.group{margin-top:clamp(2.25rem,5vw,3rem);}
+  .group-label{
+    display:flex;
+    align-items:baseline;
+    gap:.75rem;
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    margin:0 0 .9rem;
+  }
+  .group-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+
+  .foot{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:.9rem 1.8rem;
+    border-top:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.08em;
+    color:var(--ink-muted);
+  }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1.25rem;
+  }
+  .card-tile{
+    display:flex;
+    flex-direction:column;
+    gap:.6rem;
+    border:1px solid var(--line);
+    background:var(--ground-raised);
+    transition:border-color .15s ease;
+  }
+  .card-tile:hover, .card-tile:focus-visible{
+    border-color:var(--accent);
+  }
+  .card-art{
+    display:block;
+    width:100%;
+    aspect-ratio:3/2;
+    overflow:hidden;
+    background:#000;
+  }
+  .card-art img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .3s ease;
+  }
+  .card-tile:hover .card-art img, .card-tile:focus-visible .card-art img{
+    transform:scale(1.04);
+  }
+  .card-label{
+    padding:0 .9rem .95rem;
+    display:flex;
+    flex-direction:column;
+    gap:.35rem;
+  }
+  .card-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:1.15rem;
+    color:var(--ink);
+  }
+  .card-arrow{
+    font-family:var(--mono);
+    font-style:normal;
+    font-size:.9rem;
+    color:var(--ink-muted);
+    transition:transform .15s ease, color .15s ease;
+  }
+  .card-tile:hover .card-arrow, .card-tile:focus-visible .card-arrow{
+    transform:translateX(3px);
+    color:var(--accent);
+  }
+  .card-desc{
+    margin:0;
+    font-family:var(--label);
+    font-size:.85rem;
+    color:var(--ink-muted);
+    line-height:1.4;
+  }
+
+  @media (max-width:600px){
+    .card-grid{grid-template-columns:1fr;}
+  }
+</style>
+
+<header class="topbar">
+  <a class="topbar-home" href="/">ERIC GITONGA</a>
+  <nav class="topbar-plates" aria-label="Plates">
+      <a href="/daguerreotypes">Daguerreotypes</a>
+      <a href="/daubs">Daubs</a>
+      <a href="/diffs">Diffs</a>
+      <span aria-current="page">Dudus</span>
+  </nav>
+  <nav class="topbar-links" aria-label="Site">
+      <a href="/#bio-modal">Bio</a>
+      <a href="/blog">Blog</a>
+      <a href="https://shop.ericgitonga.com">Shop</a>
+      <a href="/#contact-modal">Contact</a>
+  </nav>
+</header>
+
+<div class="page">
+  <span class="plate-no">PLATE IV</span>
+  <h1>Dudus</h1>
+  <p class="intro">All about Kenya's tiniest wildlife — a portrait gallery and an identification companion, both built around the same photographs.</p>
+
+  <section class="group" aria-labelledby="explore-label">
+    <p class="group-label" id="explore-label">Explore</p>
+    <div class="card-grid">
+      <a class="card-tile" href="/dudus/dutraits">
+        <span class="card-art">
+          <img src="/assets/dudus/dutraits.jpg" alt="Macro black-and-white portrait of a moth, wings folded into a peak" loading="lazy">
+        </span>
+        <span class="card-label">
+          <span class="card-title">Dutraits <span class="card-arrow">↗</span></span>
+          <span class="card-desc">The portrait gallery — every album, one dudu at a time.</span>
+        </span>
+      </a>
+      <a class="card-tile" href="https://dudus.ericgitonga.com">
+        <span class="card-art">
+          <img src="/assets/dudus/dudepth.jpg" alt="The same moth staged on a laboratory bench beside a microscope and specimen vials" loading="lazy">
+        </span>
+        <span class="card-label">
+          <span class="card-title">Dudepth <span class="card-arrow">↗</span></span>
+          <span class="card-desc">The identification companion — learn what you're looking at.</span>
+        </span>
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer class="foot">
+  <span>PLATE IV · DUDUS</span>
+  <span>ericgitonga.com/dudus</span>
+</footer>

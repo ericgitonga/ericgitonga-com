@@ -173,14 +173,24 @@
   </nav>
 </header>
 
-<main>
+<div class="page">
   <span class="plate-no">PLATE II</span>
   <h1>Daubs</h1>
-  <p>Drawings, watercolours, and marks made for their own sake, no other agenda. This ecosystem is still being built.</p>
-  <a class="back" href="/">Back to ericgitonga.com</a>
-</main>
+  <p class="intro">Drawings, watercolours, and marks made for their own sake, no other agenda.</p>
+  <section class="group" aria-labelledby="photos-label">
+    <p class="group-label" id="photos-label">Art</p>
+    <div id="gallery-root"><p class="gallery-empty">Loading albums…</p></div>
+  </section>
+</div>
 
 <footer class="foot">
   <span>PLATE II · DAUBS</span>
   <span>ericgitonga.com/daubs</span>
 </footer>
+
+<script src="/assets/gallery.js" defer></script>
+<script defer>
+  document.addEventListener('DOMContentLoaded', function () {
+    initGallery('daguerreotypes');
+  });
+</script>

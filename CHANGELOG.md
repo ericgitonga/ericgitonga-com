@@ -7,6 +7,20 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.2.0] - 2026-09-16
+
+### Added
+
+- Second app migrated into the monorepo: `apps/dudus` (formerly `dudus-app`), full commit
+  history preserved via `git subtree` (78 commits: 77 original + 1 merge). CI split into three
+  app-prefixed workflows (`dudus-e2e`, `dudus-unit`, `dudus-unit-dudu-intake`), running
+  unconditionally rather than path-filtered — a required check that's path-filtered would stay
+  permanently "expected" (and block merge) on any PR that doesn't touch this app; `dudus-app`'s
+  own `tools/dudu-intake` workflow had already documented this exact constraint before the
+  migration. `dudus-app`'s own VERSION/CHANGELOG/tag history stops here — this repo's shared
+  version now covers it going forward. `apps/dudus/tools/dudu-intake` keeps its own independent
+  versioning (`intake-vX.Y.Z`) unchanged, same nested-exception pattern as before the migration.
+
 ## [0.1.0] - 2026-09-16
 
 ### Added

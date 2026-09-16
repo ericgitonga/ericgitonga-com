@@ -9,9 +9,21 @@ making changes anywhere in this repo — read it before making any change, howev
 
 - `apps/hub/` — the hub site (formerly `eric-gitonga-links`): the four plate pages, the album
   galleries, the contact form. Static HTML/CSS/JS, no build step, plus two Node Vercel Functions.
+- `apps/dudus/` — the Dudus identification companion (formerly `dudus-app`): Next.js/TypeScript.
+  Includes its own nested tool, `apps/dudus/tools/dudu-intake/` (a Streamlit content-editing
+  tool), which keeps independent versioning (`intake-vX.Y.Z` tags) unchanged from before the
+  migration — a working precedent that per-component versioning can coexist with this repo's own
+  one-shared-version policy for everything else.
 
-`dudus-app` and `dudu-merchandise` are not migrated yet — this repo started with `apps/hub` alone
-as a trial run. If they join later, they'll get their own `apps/<name>/` directory the same way.
+`dudu-merchandise` is not migrated yet. If it joins later, it gets its own `apps/<name>/`
+directory the same way.
+
+**Migrating a new app in:** use `git subtree add --prefix=apps/<name> <local-path-to-source-repo>
+main -m "Import <name> history into apps/<name>"` to preserve full commit history, then merge
+that PR with a **regular merge (`gh pr merge <N> --merge`), never `--squash`** — squashing
+collapses the subtree's preserved history into one commit, defeating the entire point (this
+happened once during the `apps/hub` migration; fixed with a force-push before anything else was
+built on top — don't repeat it).
 
 ## Every change gets an issue
 
@@ -39,14 +51,28 @@ gh pr create --title "..." --body "Closes #N"
 Prefix the branch/PR/commit with the app it touches once there's more than one app in here (e.g.
 `hub: fix nav overflow`) — not needed yet while `apps/hub` is the only one.
 
-## CI is per-app, path-filtered
+## CI is per-app, but runs unconditionally — not path-filtered
 
-Each app keeps its own test runner/CI workflow, gated to only run when that app's own directory
-changes (`.github/workflows/<app>-*.yml`, `on.push.paths: ["apps/<app>/**"]`) — a PR touching only
-`apps/hub/**` never triggers another app's suite. `apps/hub` currently has no automated test
-suite of its own (same as before the migration — it never had one in `eric-gitonga-links`
-either); Vercel's own build check plus a manual Preview-URL check before merging is the gate,
-same as before.
+Each app keeps its own test runner/CI workflow at the repo root (`.github/workflows/<app>-*.yml`
+— GitHub Actions only reads workflows from the repo root, never a subdirectory, so per-app
+workflow files from a migrated repo move here, not stay in `apps/<app>/.github/`), with
+`defaults: run: working-directory: apps/<app>` scoping every step into that app's own directory.
+
+**Originally planned to path-filter these (`on.push.paths: ["apps/<app>/**"]`) so an unrelated
+PR wouldn't trigger every app's suite — reconsidered during the `apps/dudus` migration.** A
+path-filtered trigger means the workflow (and the check it produces) simply never runs on a PR
+that doesn't touch that path. If that check is also marked "required" in branch protection (as
+`dudus-e2e`/`dudus-unit`/`shop-e2e`/`shop-unit` etc. all are), GitHub shows it as permanently
+"Expected — waiting for status to be reported" and the PR can never merge. `dudus-app`'s own
+`tools/dudu-intake` unit workflow had already documented this exact trap before the migration
+and chosen to run unconditionally instead — the migration just extended that same choice to
+every app's CI rather than rediscovering the problem per app. The cost: every PR runs every
+app's full suite, not just the one it touches. Revisit only with a real solution to the required
+check problem (e.g. a `dorny/paths-filter`-driven conditional pass), not a plain path filter.
+
+`apps/hub` currently has no automated test suite of its own (same as before its migration — it
+never had one in `eric-gitonga-links` either); Vercel's own build check plus a manual Preview-URL
+check before merging is the gate, same as before.
 
 ## Merge with `--squash`, delete the branch
 

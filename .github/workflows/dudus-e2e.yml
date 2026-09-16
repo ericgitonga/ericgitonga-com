@@ -1,0 +1,75 @@
+name: dudus-e2e
+
+# Gates a PR on apps/dudus' golden-path E2E suite (apps/dudus/e2e/) before it can merge to main.
+# Runs a locally built-and-started server in the CI runner, not a live Vercel Preview deployment.
+#
+# Runs unconditionally (not path-filtered to apps/dudus/**) because dudus-e2e/dudus-lint are
+# required status checks — a path-filtered trigger would leave them permanently "expected" on
+# any PR that doesn't touch this app, blocking merge forever (the same reasoning
+# apps/dudus/tools/dudu-intake's own unit workflow documents for the identical constraint).
+
+on:
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: apps/dudus
+
+jobs:
+  dudus-lint:
+    # Independently gated so a lint regression can't merge just because it doesn't happen to
+    # break the build — previously only checked incidentally via `next build` in the e2e job.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - run: npm run lint
+
+  dudus-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Start server
+        # Output redirected to a file: GitHub Actions stops capturing a backgrounded (`&`)
+        # process's output once the step that launched it exits. "Print server log" below cats
+        # this file so it's visible regardless of outcome.
+        run: |
+          npm run start > /tmp/dudus-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/api/health > /dev/null && exit 0
+            sleep 1
+          done
+          echo "Server did not become ready in time" >&2
+          exit 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Playwright (Python)
+        run: |
+          pip install playwright pillow
+          playwright install --with-deps chromium
+
+      - name: Run E2E suite
+        run: python e2e/run.py
+
+      - name: Print server log
+        if: always()
+        run: cat /tmp/dudus-server.log

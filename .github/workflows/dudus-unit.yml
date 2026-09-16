@@ -1,0 +1,29 @@
+name: dudus-unit
+
+# Gates a PR on apps/dudus' Vitest unit suite (colocated *.test.ts files) — fast, pure-logic
+# coverage, alongside (not instead of) dudus-e2e.yml's Playwright suite. No build, server, or
+# browser install needed. Runs unconditionally — see dudus-e2e.yml's comment for why a
+# required check can't be path-filtered.
+
+on:
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: apps/dudus
+
+jobs:
+  dudus-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Run unit test suite
+        run: npm run test

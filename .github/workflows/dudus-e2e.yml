@@ -1,18 +1,25 @@
-name: E2E
+name: dudus-e2e
 
-# Gates a PR on the golden-path E2E suite (e2e/) before it can merge to main. Runs a locally
-# built-and-started server in the CI runner, not a live Vercel Preview deployment — avoids
-# depending on Vercel's own deployment-webhook timing.
+# Gates a PR on apps/dudus' golden-path E2E suite (apps/dudus/e2e/) before it can merge to main.
+# Runs a locally built-and-started server in the CI runner, not a live Vercel Preview deployment.
+#
+# Runs unconditionally (not path-filtered to apps/dudus/**) because dudus-e2e/dudus-lint are
+# required status checks — a path-filtered trigger would leave them permanently "expected" on
+# any PR that doesn't touch this app, blocking merge forever (the same reasoning
+# apps/dudus/tools/dudu-intake's own unit workflow documents for the identical constraint).
 
 on:
   pull_request:
     branches: [main]
 
+defaults:
+  run:
+    working-directory: apps/dudus
+
 jobs:
-  lint:
-    # Independently gated so a lint regression can't merge just because it
-    # doesn't happen to break the build (see issue #71) — previously only
-    # checked incidentally via `next build` in the e2e job below.
+  dudus-lint:
+    # Independently gated so a lint regression can't merge just because it doesn't happen to
+    # break the build — previously only checked incidentally via `next build` in the e2e job.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +32,7 @@ jobs:
 
       - run: npm run lint
 
-  e2e:
+  dudus-e2e:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +50,7 @@ jobs:
         # process's output once the step that launched it exits. "Print server log" below cats
         # this file so it's visible regardless of outcome.
         run: |
-          npm run start > /tmp/server.log 2>&1 &
+          npm run start > /tmp/dudus-server.log 2>&1 &
           for i in $(seq 1 30); do
             curl -sf http://localhost:3000/api/health > /dev/null && exit 0
             sleep 1
@@ -65,4 +72,4 @@ jobs:
 
       - name: Print server log
         if: always()
-        run: cat /tmp/server.log
+        run: cat /tmp/dudus-server.log

@@ -7,6 +7,12 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.3.0] - 2026-09-16
+
+### Added
+
+- Wired up Daubs so it displays art work.
+
 ## [0.2.0] - 2026-09-16
 
 ### Added

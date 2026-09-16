@@ -1,4 +1,4 @@
-// Shared album-grid + modal image viewer for the Daguerreotypes and Dudus
+// Shared album-grid + modal image viewer for the Daguerreotypes, Daubs, and Dudus
 // plates. Reads /api/media-manifest (built by api/sync-media.js from Angry
 // Hosting), renders an album grid into #gallery-root, and opens a <dialog>
 // modal with previous/next navigation when an album is chosen. One shared
@@ -25,7 +25,7 @@
   }
 
   function renderEmpty(root) {
-    root.innerHTML = '<p class="gallery-empty">Photographs are on their way — check back soon.</p>';
+    root.innerHTML = '<p class="gallery-empty">Works are on their way — check back soon.</p>';
   }
 
   function renderGrid(root, albums, generatedAt) {
@@ -57,7 +57,7 @@
 
       var count = document.createElement('span');
       count.className = 'album-count';
-      count.textContent = album.images.length + (album.images.length === 1 ? ' photo' : ' photos');
+      count.textContent = album.images.length + (album.images.length === 1 ? ' item' : ' items');
 
       card.appendChild(thumb);
       card.appendChild(title);
@@ -124,8 +124,8 @@
         (FULLSCREEN_SUPPORTED
           ? '<button type="button" class="modal-fullscreen" data-gallery-fullscreen aria-label="Enter fullscreen">' + EXPAND_ICON + '</button>'
           : '') +
-        '<button type="button" class="gallery-nav gallery-prev" data-gallery-prev aria-label="Previous photo">‹</button>' +
-        '<button type="button" class="gallery-nav gallery-next" data-gallery-next aria-label="Next photo">›</button>' +
+        '<button type="button" class="gallery-nav gallery-prev" data-gallery-prev aria-label="Previous item">‹</button>' +
+        '<button type="button" class="gallery-nav gallery-next" data-gallery-next aria-label="Next item">›</button>' +
         '<img class="gallery-image" alt="">' +
         '<figcaption class="gallery-caption"></figcaption>' +
         '<div class="gallery-thumbs" data-gallery-thumbs></div>' +
@@ -199,13 +199,13 @@
     var album = currentAlbums[currentAlbumIndex];
     var image = album.images[currentImageIndex];
     modalImg.src = image.url;
-    modalImg.alt = album.title + ' — photo ' + (currentImageIndex + 1) + ' of ' + album.images.length;
+    modalImg.alt = album.title + ' — item ' + (currentImageIndex + 1) + ' of ' + album.images.length;
     modalCaption.textContent = album.title + ' — ' + (currentImageIndex + 1) + ' / ' + album.images.length;
     updateActiveThumb();
   }
 
   // Built once per album (not on every step/goTo) so clicking through
-  // photos doesn't rebuild every thumbnail's DOM node each time — only the
+  // items doesn't rebuild every thumbnail's DOM node each time — only the
   // active-state class and scroll position update per image.
   function renderThumbs() {
     var album = currentAlbums[currentAlbumIndex];
@@ -214,7 +214,7 @@
       var thumb = document.createElement('button');
       thumb.type = 'button';
       thumb.className = 'gallery-thumb';
-      thumb.setAttribute('aria-label', 'Go to photo ' + (index + 1) + ' of ' + album.images.length);
+      thumb.setAttribute('aria-label', 'Go to item ' + (index + 1) + ' of ' + album.images.length);
       var img = document.createElement('img');
       img.src = image.url;
       img.alt = '';

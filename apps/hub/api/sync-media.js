@@ -1,11 +1,11 @@
 // Nightly Vercel Cron job (see vercel.json) that crawls Angry Hosting over
-// FTP(S) for the Daguerreotypes/Dudus media, and republishes a manifest to
+// FTP(S) for the Daguerreotypes/Daubs/Dudus media, and republishes a manifest to
 // Vercel Blob for the gallery pages to read via /api/media-manifest.
 //
 // Folder convention on Angry Hosting (one level of albums, no further
-// nesting): <ANGRYHOSTING_FTP_BASE_PATH>/Daguerreotypes/<album>/<image> and
-// .../Dudus/<album>/<image>. An optional cover.<ext> file per album sets its
-// grid thumbnail; otherwise the first image alphabetically is used.
+// nesting): <ANGRYHOSTING_FTP_BASE_PATH>/Daguerreotypes/<album>/<image>,
+// .../Daubs/<album>/<image>, and .../Dudus/<album>/<image>. An optional cover.<ext>
+// file per album sets its grid thumbnail; otherwise the first image alphabetically is used.
 //
 // Requires env vars: ANGRYHOSTING_FTP_HOST, ANGRYHOSTING_FTP_USER,
 // ANGRYHOSTING_FTP_PASSWORD, MEDIA_BASE_URL, CRON_SECRET. Optional:
@@ -17,7 +17,7 @@ import { put, head } from "@vercel/blob";
 import sharp from "sharp";
 import { PassThrough } from "node:stream";
 
-const PLATES = ["Daguerreotypes", "Dudus"];
+const PLATES = ["Daguerreotypes", "Daubs", "Dudus"];
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
 const THUMBNAIL_WIDTH = 400;
 const THUMBNAIL_QUALITY = 78;

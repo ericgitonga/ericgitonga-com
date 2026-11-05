@@ -7,6 +7,12 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.3.4] - 2026-11-05
+
+### Fixed
+
+- Point the homepage `Shop` link in `apps/dudus` to `https://shop.ericgitonga.com/prints` instead of the deprecated `shop.dudus.ericgitonga.com` subdomain (closes #22).
+
 ## [0.3.3] - 2026-09-16
 
 ### Added

@@ -23,7 +23,7 @@ export default function Home() {
               Search
             </Link>
             <a
-              href="https://shop.dudus.ericgitonga.com"
+              href="https://shop.ericgitonga.com/prints"
               className="text-sm font-medium text-accent underline hover:opacity-70"
             >
               Shop

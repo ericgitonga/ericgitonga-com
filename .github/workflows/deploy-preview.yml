@@ -47,7 +47,22 @@ jobs:
         run: |
           php tests/run_unit_tests.php
 
+      - name: Check if FTPS secrets are configured
+        id: check_creds
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          if [ -z "$FTP_SERVER" ] || [ -z "$FTP_USERNAME" ] || [ -z "$FTP_PASSWORD" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=FTPS Secrets Missing::FTP_SERVER, FTP_USERNAME, and FTP_PASSWORD secrets are not yet configured on ericgitonga/ericgitonga-com."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Detect pertinent changed & retired files
+        if: steps.check_creds.outputs.configured == 'true'
         env:
           BEFORE_SHA: ${{ github.event.before }}
           AFTER_SHA: ${{ github.sha }}
@@ -66,6 +81,7 @@ jobs:
           fi
 
       - name: Upload application files to preview.ericgitonga.com via FTPS
+        if: steps.check_creds.outputs.configured == 'true'
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -80,6 +96,7 @@ jobs:
           python3 .github/scripts/ftps_deploy.py --mode preview --app-root /ericgitonga.com/preview --files-list /tmp/changed_files.txt --deleted-files-list /tmp/deleted_files.txt --release-sha "${GITHUB_SHA}" "${TLS_ARG[@]}"
 
       - name: Verify preview health readiness
+        if: steps.check_creds.outputs.configured == 'true'
         run: |
           set -euo pipefail
           EXPECTED_VER="$(tr -d '[:space:]' < VERSION)"

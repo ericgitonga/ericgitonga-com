@@ -193,7 +193,7 @@ it('AntiSpamGate rejects disguised honeypot submission (Layer 1)', function () {
         'email' => 'john@example.com',
         'message' => 'Hello there',
     ];
-    $res = AntiSpamGate::verifySubmission($post, '192.168.1.100');
+    $res = AntiSpamGate::verifySubmission($post, '10.194.1.100');
     assertTrue(!$res['valid'], 'Honeypot submission must be rejected');
     assertTrue(str_contains($res['error'], 'Automated bot activity'), 'Error should identify honeypot');
 });
@@ -210,7 +210,7 @@ it('AntiSpamGate rejects submissions completed in under 4 seconds (Layer 2)', fu
         'email' => 'john@example.com',
         'message' => 'Hello there message',
     ];
-    $res = AntiSpamGate::verifySubmission($post, '192.168.1.101');
+    $res = AntiSpamGate::verifySubmission($post, '10.194.1.101');
     assertTrue(!$res['valid'], 'Submission under 4s must be rejected');
     assertTrue(str_contains($res['error'], 'too rapidly'), 'Error should identify rapid submission');
 });
@@ -228,11 +228,11 @@ it('AntiSpamGate locks signatures against single-use replay attacks (Layer 2)', 
         'email' => 'jane@example.com',
         'message' => 'Genuine inquiry message here.',
     ];
-    $res1 = AntiSpamGate::verifySubmission($post, '192.168.1.102');
+    $res1 = AntiSpamGate::verifySubmission($post, '10.194.1.102');
     assertTrue($res1['valid'], 'First legitimate submission must succeed: ' . $res1['error']);
 
     // Second submission with exact same signature must be rejected!
-    $res2 = AntiSpamGate::verifySubmission($post, '192.168.1.102');
+    $res2 = AntiSpamGate::verifySubmission($post, '10.194.1.102');
     assertTrue(!$res2['valid'], 'Replay submission of used signature must fail');
     assertTrue(str_contains($res2['error'], 'already used'), 'Error should indicate replay rejection');
 });
@@ -250,7 +250,7 @@ it('AntiSpamGate enforces heuristic content filters: links in name, spam TLDs, s
 
     // Link in name
     $p1 = array_merge($basePost, ['name' => 'Check https://spam.com', 'message' => 'Normal message']);
-    $r1 = AntiSpamGate::verifySubmission($p1, '192.168.1.103');
+    $r1 = AntiSpamGate::verifySubmission($p1, '10.194.1.103');
     assertTrue(!$r1['valid'], 'Link in name must be rejected');
 
     // Multiple links in message (> 1)
@@ -262,7 +262,7 @@ it('AntiSpamGate enforces heuristic content filters: links in name, spam TLDs, s
         'name' => 'Valid Name',
         'message' => 'See https://link1.com and also https://link2.com'
     ]);
-    $r2 = AntiSpamGate::verifySubmission($p2, '192.168.1.104');
+    $r2 = AntiSpamGate::verifySubmission($p2, '10.194.1.104');
     assertTrue(!$r2['valid'], 'Multiple links in message must be rejected');
 
     // ALL-CAPS shouting (>60%)
@@ -274,7 +274,7 @@ it('AntiSpamGate enforces heuristic content filters: links in name, spam TLDs, s
         'name' => 'Valid Name',
         'message' => 'BUY OUR CRYPTO NOW THIS IS AN URGENT SPECIAL DEAL'
     ]);
-    $r3 = AntiSpamGate::verifySubmission($p3, '192.168.1.105');
+    $r3 = AntiSpamGate::verifySubmission($p3, '10.194.1.105');
     assertTrue(!$r3['valid'], 'Excessive uppercase shouting must be rejected');
 });
 

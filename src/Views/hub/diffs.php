@@ -66,7 +66,7 @@
     transition: transform .15s ease, color .15s ease;
   }
   .entry:hover .entry-arrow {
-    transform: translateX(3px);
+    transform: translate(2px, -2px);
     color: var(--accent);
   }
   .entry-desc {
@@ -85,32 +85,32 @@
 
   <ul class="entries">
     <li class="entry">
+      <a href="https://ndingifoundation.org" target="_blank" rel="noopener">
+        <div class="entry-top">
+          <span class="entry-name">ndingi<span class="slash">/</span>foundation</span>
+          <span class="entry-arrow">↗</span>
+        </div>
+        <p class="entry-desc">Archbishop Ndingi Mwana a'Nzeki Foundation — education scholarships, endowment fund, and community youth development in Kenya.</p>
+      </a>
+    </li>
+
+    <li class="entry">
+      <a href="https://www.menletstalk.co.ke" target="_blank" rel="noopener">
+        <div class="entry-top">
+          <span class="entry-name">men<span class="slash">/</span>lets-talk</span>
+          <span class="entry-arrow">↗</span>
+        </div>
+        <p class="entry-desc">A safe space for men to reflect, share, and navigate life's challenges — community conversations, mental wellness, and mentorship initiatives across Kenya.</p>
+      </a>
+    </li>
+
+    <li class="entry">
       <a href="https://www.busherianbiasharas.com" target="_blank" rel="noopener">
         <div class="entry-top">
           <span class="entry-name">busherian<span class="slash">/</span>biasharas</span>
-          <span class="entry-arrow">→</span>
+          <span class="entry-arrow">↗</span>
         </div>
         <p class="entry-desc">Alliance High School & Alliance Girls High School alumni business directory, connecting verified busherian businesses worldwide.</p>
-      </a>
-    </li>
-
-    <li class="entry">
-      <a href="/dudus">
-        <div class="entry-top">
-          <span class="entry-name">dudus<span class="slash">/</span>companion</span>
-          <span class="entry-arrow">→</span>
-        </div>
-        <p class="entry-desc">Kenyan entomology field companion and photographic identification system for over 200 arthropod species.</p>
-      </a>
-    </li>
-
-    <li class="entry">
-      <a href="/shop">
-        <div class="entry-top">
-          <span class="entry-name">print<span class="slash">/</span>shop</span>
-          <span class="entry-arrow">→</span>
-        </div>
-        <p class="entry-desc">Fine art archival print shop with interactive room wall mockups and direct M-Pesa payment validation.</p>
       </a>
     </li>
   </ul>

@@ -7,6 +7,15 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.4.3] - 2026-11-20
+
+### Changed
+- Updated Diffs (`/diffs`) project portfolio:
+  - Added Ndingi Foundation (`https://ndingifoundation.org`).
+  - Added Men Let's Talk (`https://www.menletstalk.co.ke`).
+  - Retained Busherian Biasharas (`https://www.busherianbiasharas.com`).
+  - Removed Career-Transition and En Mascaradores entries.
+
 ## [0.4.2] - 2026-11-20
 
 ### Changed

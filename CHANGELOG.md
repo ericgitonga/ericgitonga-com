@@ -20,6 +20,8 @@ change to any component bumps this same number, by design (see README's "Version
 - Enforced 7-layer public form anti-spam defense gate (`src/Security/AntiSpamGate.php`) on the Contact modal.
 - Added strict media protection guards in `ftps_deploy.py` permanently forbidding mutation/deletion of `Daguerreotypes/`, `Dudus/`, `media/`, and uploads.
 - Added automated unit test suite (`tests/run_unit_tests.php`) covering all 14 core subsystems.
+- Added direct slug routing `/dudus/{id}` and route shortcuts for `/cart` and `/checkout`.
+- Enforced isolated SQLite database for preview and CI unit tests.
 
 ## [0.3.4] - 2026-11-05
 

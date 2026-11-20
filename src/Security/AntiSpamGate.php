@@ -4,37 +4,12 @@ declare(strict_types=1);
 namespace EricGitonga\Security;
 
 use EricGitonga\Config\AppConfig;
+use EricGitonga\Config\Database;
 
 final class AntiSpamGate
 {
     public const MIN_SUBMISSION_SECONDS = 4;
     public const MAX_SUBMISSION_SECONDS = 7200; // 2 hours
-    private static ?\PDO $sqlite = null;
-
-    private static function getDb(): \PDO
-    {
-        if (self::$sqlite !== null) {
-            return self::$sqlite;
-        }
-        $dbPath = AppConfig::storageDir('database.sqlite');
-        $dir = dirname($dbPath);
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0775, true);
-        }
-        self::$sqlite = new \PDO('sqlite:' . $dbPath);
-        self::$sqlite->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        self::$sqlite->exec("CREATE TABLE IF NOT EXISTS used_signatures (
-            sig TEXT PRIMARY KEY,
-            created_at INTEGER
-        )");
-        self::$sqlite->exec("CREATE TABLE IF NOT EXISTS spam_rate_limits (
-            ip_hash TEXT,
-            window_hour INTEGER,
-            count INTEGER,
-            PRIMARY KEY(ip_hash, window_hour)
-        )");
-        return self::$sqlite;
-    }
 
     public static function generateProofToken(): array
     {
@@ -81,7 +56,7 @@ final class AntiSpamGate
             return ['valid' => false, 'error' => 'Form submission token expired'];
         }
 
-        $db = self::getDb();
+        $db = Database::getPdo();
         // Check single-use replay
         $stmt = $db->prepare("SELECT 1 FROM used_signatures WHERE sig = ?");
         $stmt->execute([$sig]);
@@ -148,7 +123,7 @@ final class AntiSpamGate
         $limitStmt = $db->prepare("SELECT count FROM spam_rate_limits WHERE ip_hash = ? AND window_hour = ?");
         $limitStmt->execute([$ipHash, $currentHour]);
         $ipCount = (int)($limitStmt->fetchColumn() ?: 0);
-        if ($ipCount >= 5) { // 5 per hour / 2 per 15 min
+        if ($ipCount >= 5) {
             return ['valid' => false, 'error' => 'Rate limit exceeded. Please try again later.'];
         }
 
@@ -160,9 +135,15 @@ final class AntiSpamGate
             return ['valid' => false, 'error' => 'Service is busy. Please try again later.'];
         }
 
-        // Increment count
-        $inc = $db->prepare("INSERT INTO spam_rate_limits (ip_hash, window_hour, count) VALUES (?, ?, 1)
-            ON CONFLICT(ip_hash, window_hour) DO UPDATE SET count = count + 1");
+        // Increment count based on driver
+        $driver = $db->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'mysql') {
+            $inc = $db->prepare("INSERT INTO spam_rate_limits (ip_hash, window_hour, count) VALUES (?, ?, 1)
+                ON DUPLICATE KEY UPDATE count = count + 1");
+        } else {
+            $inc = $db->prepare("INSERT INTO spam_rate_limits (ip_hash, window_hour, count) VALUES (?, ?, 1)
+                ON CONFLICT(ip_hash, window_hour) DO UPDATE SET count = count + 1");
+        }
         $inc->execute([$ipHash, $currentHour]);
 
         return ['valid' => true, 'error' => ''];

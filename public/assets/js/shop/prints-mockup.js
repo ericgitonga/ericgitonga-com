@@ -1,0 +1,146 @@
+/* Living-room wall mockup for Prints: places the chosen photo directly on the wall in
+   room.jpg — frameless, positioned against the moulded wall panel already visible in that
+   photo. Geometry and technique validated in issue #17's spike, ported in #20.
+
+   The mockup always renders at A2, regardless of which size is selected for ordering — sizing
+   the box to match every ISO size in turn made the larger/smaller ends look disproportionate
+   against this one room photo (A0 in particular read as roughly couch-sized, which it isn't;
+   see issue #25). A2 is the one that reads right, so it's the fixed reference render; the size
+   picker only ever changes price and what's ordered, never the preview's own dimensions.
+
+   Orientation (portrait vs landscape) is still chosen per photo to match its own aspect ratio —
+   the same test already used below for paper-size orientation — so a photo is never
+   force-cropped into the wrong shape. object-fit: cover then does the actual centred crop once
+   width/height are set to the target box. */
+
+(function () {
+  const roomScene = document.getElementById("room-scene");
+  const printImg = document.getElementById("wall-print");
+  const bookmarkSlot = document.getElementById("bookmark-slot");
+  const bookmarkImg = document.getElementById("bookmark-img");
+  const grid = document.querySelector(".catalogue-grid");
+  const sizeInputs = document.querySelectorAll('input[name="size"]');
+  const priceEl = document.getElementById("selected-price");
+  const addBtn = document.getElementById("add-to-cart-print");
+  const statusEl = document.getElementById("add-to-cart-status");
+  const qtyInput = document.getElementById("selected-qty");
+
+  // The moulded wall panel above the sofa in room.jpg, as % of the image's own dimensions
+  // (read off the original 1559x1009 source — percentages, so this held when the shipped
+  // file was later downsized to 1100x712 for load time) — see issue #17's spike.
+  const PANEL = { x0: 13.79, x1: 82.1, y0: 1.98, y1: 51.04 };
+  const PANEL_CX = (PANEL.x0 + PANEL.x1) / 2;
+  const PANEL_CY = (PANEL.y0 + PANEL.y1) / 2;
+  const ROOM_ASPECT = 1100 / 712;
+
+  // Real-world scale is an authored/tuned constant, not a measured one — same status the old
+  // illustrated wall's PX_PER_CM always had. Assumes the visible wall spans about 3m corner
+  // to corner. Only matters for the one fixed A2 render now, not for comparing sizes.
+  const ROOM_WIDTH_CM = 300;
+  const MOCKUP_SIZE = "A2";
+
+  const SIZES_MM = JSON.parse(document.getElementById("print-sizes-data").textContent);
+
+  let selected = { id: null, full: null, bookmark: null, aspect: 1 };
+
+  function currentSize() {
+    const checked = document.querySelector('input[name="size"]:checked');
+    return checked ? checked.value : null;
+  }
+
+  function renderMockup() {
+    if (!selected.full) return;
+
+    const isBookmark = currentSize() === "Bookmark";
+    if (isBookmark) {
+      roomScene.classList.add("is-bookmark");
+      roomScene.style.backgroundImage = `url('${roomScene.dataset.bookmarkBg}')`;
+      printImg.hidden = true;
+      bookmarkSlot.hidden = false;
+      bookmarkImg.src = selected.bookmark || selected.full;
+      return;
+    }
+
+    roomScene.classList.remove("is-bookmark");
+    roomScene.style.backgroundImage = `url('${roomScene.dataset.roomBg}')`;
+    bookmarkSlot.hidden = true;
+    printImg.hidden = false;
+
+    const spec = SIZES_MM[MOCKUP_SIZE];
+    const shortCm = spec.w_mm / 10;
+    const longCm = spec.h_mm / 10;
+    // Orient the print (portrait vs landscape) to whichever is closer to the photo's own
+    // aspect ratio, rather than forcing every photo into one shape.
+    const portraitAspect = shortCm / longCm;
+    const landscapeAspect = longCm / shortCm;
+    const usePortrait = Math.abs(portraitAspect - selected.aspect) <= Math.abs(landscapeAspect - selected.aspect);
+    const wCm = usePortrait ? shortCm : longCm;
+    const hCm = usePortrait ? longCm : shortCm;
+
+    const widthPct = (wCm / ROOM_WIDTH_CM) * 100;
+    const heightPct = (hCm / ROOM_WIDTH_CM) * ROOM_ASPECT * 100;
+
+    printImg.style.width = `${widthPct}%`;
+    printImg.style.height = `${heightPct}%`;
+    printImg.style.left = `${PANEL_CX - widthPct / 2}%`;
+    printImg.style.top = `${PANEL_CY - heightPct / 2}%`;
+    printImg.src = selected.full;
+  }
+
+  function currentQty() {
+    return parseInt(qtyInput.value, 10) || 1;
+  }
+
+  function updateOrderControls() {
+    const size = currentSize();
+    if (!size) return;
+    const unit = SIZES_MM[size].price;
+    const qty = currentQty();
+    priceEl.textContent = qty > 1
+      ? `KES ${unit.toLocaleString()} each — KES ${(unit * qty).toLocaleString()} total`
+      : `KES ${unit.toLocaleString()}`;
+    addBtn.disabled = !selected.id;
+  }
+
+  // width/height come from manifest.json (issue #38) — no image load to wait on, so the button
+  // enables the instant a photo is picked, including the auto-selected first photo on page load.
+  grid.addEventListener("photo-selected", (event) => {
+    const { id, full, bookmark, width, height } = event.detail;
+    selected = { id, full, bookmark, aspect: width / height };
+    renderMockup();
+    updateOrderControls();
+  });
+
+  // Select the first photo by default so the mockup preview isn't blank on load. Triggered
+  // synchronously here (catalogue-picker.js's click listener above is already attached, since
+  // that script runs earlier) rather than via a deferred setTimeout in catalogue-picker.js
+  // itself, which headless Chromium's background-tab timer throttling could intermittently
+  // delay or skip entirely (issue #90).
+  const firstThumb = grid.querySelector(".catalogue-thumb");
+  if (firstThumb) firstThumb.click();
+
+  sizeInputs.forEach((input) =>
+    input.addEventListener("change", () => {
+      renderMockup();
+      updateOrderControls();
+    })
+  );
+  qtyInput.addEventListener("input", updateOrderControls);
+  qtyInput.addEventListener("change", updateOrderControls);
+
+  addBtn.addEventListener("click", async () => {
+    if (!selected.id) return;
+    const size = currentSize();
+    const qty = currentQty();
+    addBtn.disabled = true;
+    const data = await addToCart({ type: "print", photo_id: selected.id, size, qty });
+    addBtn.disabled = false;
+    statusEl.textContent = data.ok
+      ? (qty === 1 ? "Added to cart." : `Added ${qty} to cart.`)
+      : (data.error || "Couldn't add that to the cart — please try again.");
+    if (data.ok) {
+      qtyInput.value = 1;
+      updateOrderControls();
+    }
+  });
+})();

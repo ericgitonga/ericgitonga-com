@@ -1,2 +1,7 @@
 .vercel
 .env*
+storage/*.sqlite
+storage/cache/*
+!storage/cache/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep

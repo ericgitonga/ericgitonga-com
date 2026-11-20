@@ -7,6 +7,20 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.4.0] - 2026-11-20
+
+### Added
+- Complete unified PHP 8.3 architecture on `preview` branch for `preview.ericgitonga.com`.
+- Front Controller (`public/index.php`) and clean URL router (`src/Router.php`) with zero framework bloat.
+- Abolished all subdomains into unified paths:
+  - Dudus companion moved from `dudus.ericgitonga.com` to `ericgitonga.com/dudus/*` (`/dudus`, `/dudus/identify`, `/dudus/card/{id}`, `/dudus/orders/{order}`, `/dudus/search`, `/dudus/dutraits`).
+  - Shop moved from `shop.ericgitonga.com` to `ericgitonga.com/shop/*` (`/shop`, `/shop/prints`, `/shop/daguerreotypes`, `/shop/apparel`, `/shop/coasters`, `/shop/cart`, `/shop/checkout`).
+- Ported Flask print shop into native PHP session cart with 30% non-Dudu print discount rule, living-room wall mockup scaling, and SQLite M-Pesa anti-replay ledger.
+- Ported dynamic Markdown blog engine (`src/Services/BlogService.php`) directly rendering `content/blog/*.md`.
+- Enforced 7-layer public form anti-spam defense gate (`src/Security/AntiSpamGate.php`) on the Contact modal.
+- Added strict media protection guards in `ftps_deploy.py` permanently forbidding mutation/deletion of `Daguerreotypes/`, `Dudus/`, `media/`, and uploads.
+- Added automated unit test suite (`tests/run_unit_tests.php`) covering all 14 core subsystems.
+
 ## [0.3.4] - 2026-11-05
 
 ### Fixed

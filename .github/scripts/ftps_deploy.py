@@ -127,19 +127,19 @@ def validate_deletable_deploy_path(rel_path: str) -> str:
 def map_remote_path(rel_path: str, app_root: str, mode: str) -> str:
     norm = validate_relative_deploy_path(rel_path)
     if mode == "prod":
-        clean_root = (app_root or "/busherianbiasharas.com/www").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/www").rstrip("/")
         if norm.startswith("public/"):
             sub = norm[len("public/"):]
             return f"{clean_root}/html/{sub}"
         return f"{clean_root}/{norm}"
     if mode == "preview":
-        clean_root = (app_root or "/busherianbiasharas.com/preview").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/preview").rstrip("/")
         if norm.startswith("public/"):
             sub = norm[len("public/"):]
             return f"{clean_root}/html/{sub}"
         return f"{clean_root}/{norm}"
     if mode == "preprod":
-        clean_root = (app_root or "/busherianbiasharas.com/www").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/www").rstrip("/")
         if norm.startswith("public/"):
             sub = norm[len("public/"):]
             return f"{clean_root}/html/admin/preprod/{sub}"
@@ -154,26 +154,26 @@ def map_remote_delete_path(rel_path: str, app_root: str, mode: str) -> str:
 
 def manifest_remote_path(app_root: str, mode: str) -> str:
     if mode == "prod":
-        clean_root = (app_root or "/busherianbiasharas.com/www").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/www").rstrip("/")
         return f"{clean_root}/.deploy_manifest.json"
     if mode == "preview":
-        clean_root = (app_root or "/busherianbiasharas.com/preview").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/preview").rstrip("/")
         return f"{clean_root}/.deploy_manifest.json"
     if mode == "preprod":
-        clean_root = (app_root or "/busherianbiasharas.com/www").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/www").rstrip("/")
         return f"{clean_root}/preprod_app/.deploy_manifest.json"
     raise ValueError(f"Unsupported deploy mode: {mode!r}")
 
 
 def maintenance_gate_remote_path(app_root: str, mode: str) -> str:
     if mode == "prod":
-        clean_root = (app_root or "/busherianbiasharas.com/www").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/www").rstrip("/")
         return f"{clean_root}/.maintenance_deploy.json"
     if mode == "preview":
-        clean_root = (app_root or "/busherianbiasharas.com/preview").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/preview").rstrip("/")
         return f"{clean_root}/.maintenance_deploy.json"
     if mode == "preprod":
-        clean_root = (app_root or "/busherianbiasharas.com/www").rstrip("/")
+        clean_root = (app_root or "/ericgitonga.com/www").rstrip("/")
         return f"{clean_root}/preprod_app/.maintenance_deploy.json"
     raise ValueError(f"Unsupported deploy mode: {mode!r}")
 
@@ -650,7 +650,7 @@ def main(argv: list[str] | None = None) -> int:
     host = os.environ["FTP_SERVER"]
     user = os.environ["FTP_USERNAME"]
     password = os.environ["FTP_PASSWORD"]
-    default_root = "/busherianbiasharas.com/preview" if args.mode == "preview" else "/busherianbiasharas.com/www"
+    default_root = "/ericgitonga.com/preview" if args.mode == "preview" else "/ericgitonga.com/www"
     app_root = (args.app_root or os.environ.get("FTP_APP_ROOT") or default_root).rstrip("/")
 
     try:

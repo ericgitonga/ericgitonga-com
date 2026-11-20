@@ -7,6 +7,15 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.4.1] - 2026-11-20
+
+### Added
+- Replaced placeholder on Daubs (`/daubs`) with interactive album grid (`initGallery("daubs")`) and lightbox modal viewer.
+- Integrated comprehensive production media manifest (`content/media/manifest.json`) covering all 18 Dudus albums, 3 Daguerreotypes albums, and 4 Daubs albums.
+- Bundled ~3 sample items per section in `public/media/`, `public/photos/`, and `public/static/` for an authentic, self-contained preview experience without overwhelming storage.
+- Mapped `photo_ref` in `DudusCatalogService` to ensure all 24 dudu species cards display their macro photographs.
+- Added unit test suite for `MediaService` manifest integrity across all three plates.
+
 ## [0.4.0] - 2026-11-20
 
 ### Added

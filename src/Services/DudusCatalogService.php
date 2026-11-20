@@ -49,7 +49,7 @@ final class DudusCatalogService
                 'diet' => $item['diet'] ?? '',
                 'habitat' => $item['habitat'] ?? 'Kenya',
                 'blurb' => $blurb,
-                'image_url' => $item['image_url'] ?? $item['image'] ?? '',
+                'image_url' => $item['image_url'] ?? $item['image'] ?? $item['photo_ref'] ?? '',
                 'plate_id' => $item['plate_id'] ?? '',
             ];
             $ordersMap[$order] = ($ordersMap[$order] ?? 0) + 1;

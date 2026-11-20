@@ -114,6 +114,18 @@ final class AppConfig
         return $sub === '' ? $base : ($base . '/' . ltrim($sub, '/'));
     }
 
+    public static function publicDir(string $sub = ''): string
+    {
+        $base = self::rootDir() . '/public';
+        return $sub === '' ? $base : ($base . '/' . ltrim($sub, '/'));
+    }
+
+    public static function isLocal(): bool
+    {
+        $env = strtolower(self::env('APP_ENV', ''));
+        return in_array($env, ['local', 'development', 'dev'], true) || PHP_SAPI === 'cli';
+    }
+
     public static function getHmacSecret(): string
     {
         $secret = self::env('APP_HMAC_SECRET');

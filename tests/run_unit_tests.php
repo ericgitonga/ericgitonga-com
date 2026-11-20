@@ -302,6 +302,19 @@ it('Router dispatches static and dynamic routes', function () {
     assertEquals('my-awesome-post', $extractedSlug, 'Dynamic param should be extracted correctly');
 });
 
+// ── 9. Media Manifest ────────────────────────────────────────────────────────
+it('MediaService returns complete manifest for Dudus, Daguerreotypes, and Daubs', function () {
+    $manifest = \EricGitonga\Services\MediaService::getManifest();
+    assertTrue(is_array($manifest), 'Manifest should be array');
+    assertTrue(isset($manifest['plates']), 'Manifest should have plates');
+    assertTrue(isset($manifest['plates']['dudus']), 'Plates should have dudus');
+    assertTrue(isset($manifest['plates']['daguerreotypes']), 'Plates should have daguerreotypes');
+    assertTrue(isset($manifest['plates']['daubs']), 'Plates should have daubs');
+    assertTrue(count($manifest['plates']['daubs']) >= 3, 'Daubs must have at least 3 albums');
+    assertTrue(count($manifest['plates']['daguerreotypes']) >= 3, 'Daguerreotypes must have at least 3 albums');
+    assertTrue(count($manifest['plates']['dudus']) >= 3, 'Dudus must have at least 3 albums');
+});
+
 echo "\n────────────────────────────────────────────────────────────\n";
 echo "Tests Passed: {$passed} | Tests Failed: {$failed}\n";
 echo "────────────────────────────────────────────────────────────\n";

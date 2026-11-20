@@ -29,14 +29,58 @@
     margin: 0 0 2rem;
     line-height: 1.5;
   }
-  .placeholder-box {
-    border: 1px dashed var(--line);
-    background: var(--ground-raised);
-    padding: 3rem 2rem;
-    text-align: center;
-    color: var(--ink-muted);
+  section.group { margin-top: clamp(2rem, 4vw, 2.5rem); }
+  .group-label {
+    display: flex;
+    align-items: baseline;
+    gap: .75rem;
     font-family: var(--mono);
-    font-size: .85rem;
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0 0 .9rem;
+  }
+  .group-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+  }
+  .album-card {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    color: inherit;
+  }
+  .album-thumb {
+    width: 100%;
+    aspect-ratio: 3/2;
+    object-fit: cover;
+    background: var(--ground-raised);
+    border: 1px solid var(--line);
+    transition: transform .2s ease;
+  }
+  .album-card:hover .album-thumb { transform: scale(1.03); }
+  .album-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-style: italic;
+  }
+  .album-count {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--ink-muted);
   }
 </style>
 
@@ -51,7 +95,17 @@
   <h1>Daubs</h1>
   <p class="intro">Drawings, watercolours, and marks made for their own sake — informal work from sketchbook to finished paper.</p>
 
-  <div class="placeholder-box">
-    Studio folio in preparation. Sketches and watercolours will appear here once digitized.
-  </div>
+  <section class="group" aria-labelledby="artwork-label">
+    <p class="group-label" id="artwork-label">Artwork</p>
+    <div id="gallery-root"><p style="font-family: var(--mono); font-size: .85rem; color: var(--ink-muted);">Loading albums…</p></div>
+  </section>
 </div>
+
+<script src="/assets/gallery.js" defer></script>
+<script defer>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof initGallery === 'function') {
+      initGallery('daubs');
+    }
+  });
+</script>

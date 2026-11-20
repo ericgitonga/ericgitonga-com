@@ -37,6 +37,9 @@ $router->get('/dudus/identify', [DudusController::class, 'identify']);
 $router->get('/dudus/card/{id}', [DudusController::class, 'card']);
 $router->get('/dudus/orders/{order}', [DudusController::class, 'orders']);
 $router->get('/dudus/search', [DudusController::class, 'search']);
+$router->get('/dudus/{id}', [DudusController::class, 'card']);
+$router->get('/cart', function() { header('Location: /shop/cart', true, 301); exit; });
+$router->get('/checkout', function() { header('Location: /shop/checkout', true, 301); exit; });
 $router->get('/api/dudus/search', [DudusController::class, 'apiSearch']);
 
 // ── Shop & Cart ──

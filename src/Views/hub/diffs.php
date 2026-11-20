@@ -79,12 +79,6 @@
 </style>
 
 <div class="plate-page">
-  <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <span aria-current="page">DIFFS</span>
-  </div>
-
   <span class="plate-no">PLATE IV</span>
   <h1>Diffs</h1>
   <p class="intro">Software and systems — Eric Gitonga's technical practice. Selected tools, platforms, and products.</p>

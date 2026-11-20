@@ -116,12 +116,6 @@
 </style>
 
 <div class="plate-page">
-  <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <span aria-current="page">DUDUS</span>
-  </div>
-
   <span class="plate-no">PLATE I</span>
   <h1>Dudus</h1>
   <p class="intro">Kenya's tiniest wildlife — observed in life, photographed in macro fidelity, and organized by taxonomic order.</p>

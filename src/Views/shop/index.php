@@ -74,12 +74,6 @@
 </style>
 
 <div class="shop-page">
-  <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <span aria-current="page">SHOP</span>
-  </div>
-
   <h1>Archival Print Shop</h1>
   <p class="intro">Fine art archival prints, apparel, and coasters. Printed to order, framed on museum-grade cotton rag, and payable via M-Pesa.</p>
 

@@ -79,9 +79,7 @@ $q = (string)($_GET['q'] ?? '');
 
 <div class="plate-page">
   <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <a href="/dudus">DUDUS</a>
+    <a href="/dudus">← DUDUS</a>
     <span class="crumb-sep">/</span>
     <span aria-current="page">SEARCH</span>
   </div>

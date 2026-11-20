@@ -85,12 +85,6 @@
 </style>
 
 <div class="plate-page">
-  <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <span aria-current="page">DAUBS</span>
-  </div>
-
   <span class="plate-no">PLATE III</span>
   <h1>Daubs</h1>
   <p class="intro">Drawings, watercolours, and marks made for their own sake — informal work from sketchbook to finished paper.</p>

@@ -65,12 +65,6 @@
 </style>
 
 <div class="blog-page">
-  <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <span aria-current="page">BLOG</span>
-  </div>
-
   <h1>Blog</h1>
   <p class="intro">Tech and art — software, photography, drawing, watercolour, and dudus, in whatever combination a given post needs.</p>
 

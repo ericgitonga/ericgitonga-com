@@ -138,9 +138,7 @@ $titleHeader = ($collection === 'dudu') ? 'Dudu Prints' : 'Daguerreotypes Prints
 
 <div class="shop-view">
   <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <a href="/shop">SHOP</a>
+    <a href="/shop">← SHOP</a>
     <span class="crumb-sep">/</span>
     <span aria-current="page"><?= strtoupper($titleHeader) ?></span>
   </div>

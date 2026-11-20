@@ -59,11 +59,9 @@ $orderName = $cards[0]['order'] ?? 'Order';
 
 <div class="plate-page">
   <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
     <a href="/dudus">DUDUS</a>
     <span class="crumb-sep">/</span>
-    <a href="/dudus/identify">ORDERS</a>
+    <a href="/dudus/identify">← ORDERS</a>
     <span class="crumb-sep">/</span>
     <span aria-current="page"><?= htmlspecialchars((string)$orderName, ENT_QUOTES, 'UTF-8') ?></span>
   </div>

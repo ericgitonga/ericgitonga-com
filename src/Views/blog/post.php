@@ -61,9 +61,7 @@
 
 <div class="post-page">
   <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <a href="/blog">BLOG</a>
+    <a href="/blog">← BLOG</a>
     <span class="crumb-sep">/</span>
     <span aria-current="page"><?= htmlspecialchars($post['slug'], ENT_QUOTES, 'UTF-8') ?></span>
   </div>

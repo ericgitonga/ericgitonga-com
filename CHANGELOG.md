@@ -7,6 +7,17 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.4.2] - 2026-11-20
+
+### Changed
+- Standardized topbar header across all pages to unified 2-group Dan Winters minimalist layout matching reference design:
+  - Left: `DUDUS    DAGUERREOTYPES    DAUBS    DIFFS` (all uppercase monospace, with active plate highlighted).
+  - Right: `Bio    Blog    Shop    Contact` (title case monospace, Bio/Contact opening global dialogs, Blog/Shop linking to their sections).
+  - Removed obsolete `topbar-home` ("ERIC GITONGA") from header bar; linked author credit in footer to `/`.
+  - Removed duplicate and legacy `← ERIC GITONGA / ...` breadcrumbs from top-level plate and section pages (`/daubs`, `/diffs`, `/daguerreotypes`, `/dudus`, `/blog`, `/shop`).
+  - Streamlined nested subpage breadcrumbs to point cleanly to parent sections (`← DUDUS`, `← BLOG`, `← SHOP`).
+- Added unit test asserting topbar header uniformity and link presence across all views.
+
 ## [0.4.1] - 2026-11-20
 
 ### Added

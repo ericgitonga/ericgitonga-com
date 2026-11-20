@@ -85,12 +85,6 @@
 </style>
 
 <div class="plate-page">
-  <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <span aria-current="page">DAGUERREOTYPES</span>
-  </div>
-
   <span class="plate-no">PLATE II</span>
   <h1>Daguerreotypes</h1>
   <p class="intro">Photographs — landscapes, portraits, and documentary moments from Kenya and beyond.</p>

@@ -1,8 +1,6 @@
 <div class="shop-page" style="max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem;">
   <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <a href="/shop">SHOP</a>
+    <a href="/shop">← SHOP</a>
     <span class="crumb-sep">/</span>
     <span aria-current="page">APPAREL</span>
   </div>

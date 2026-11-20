@@ -81,9 +81,7 @@
 
 <div class="card-page">
   <div class="breadcrumb" aria-label="Breadcrumb">
-    <a href="/">← ERIC GITONGA</a>
-    <span class="crumb-sep">/</span>
-    <a href="/dudus">DUDUS</a>
+    <a href="/dudus">← DUDUS</a>
     <span class="crumb-sep">/</span>
     <a href="/dudus/orders/<?= urlencode((string)$card['order']) ?>"><?= htmlspecialchars((string)$card['order'], ENT_QUOTES, 'UTF-8') ?></a>
     <span class="crumb-sep">/</span>

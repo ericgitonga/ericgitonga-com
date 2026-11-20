@@ -3,51 +3,44 @@ declare(strict_types=1);
 
 /** @var string $currentSection */
 $currentSection = $currentSection ?? '';
-$isHub = ($currentSection === 'hub');
 ?>
 <header class="topbar">
-  <?php if ($isHub): ?>
-    <span class="topbar-home">ERIC GITONGA</span>
-  <?php else: ?>
-    <a href="/" class="topbar-home">ERIC GITONGA</a>
-  <?php endif; ?>
-
   <nav class="topbar-plates" aria-label="Plates">
     <?php if ($currentSection === 'dudus'): ?>
-      <span aria-current="page">Dudus</span>
+      <a href="/dudus" aria-current="page">DUDUS</a>
     <?php else: ?>
-      <a href="/dudus">Dudus</a>
+      <a href="/dudus">DUDUS</a>
     <?php endif; ?>
 
     <?php if ($currentSection === 'daguerreotypes'): ?>
-      <span aria-current="page">Daguerreotypes</span>
+      <a href="/daguerreotypes" aria-current="page">DAGUERREOTYPES</a>
     <?php else: ?>
-      <a href="/daguerreotypes">Daguerreotypes</a>
+      <a href="/daguerreotypes">DAGUERREOTYPES</a>
     <?php endif; ?>
 
     <?php if ($currentSection === 'daubs'): ?>
-      <span aria-current="page">Daubs</span>
+      <a href="/daubs" aria-current="page">DAUBS</a>
     <?php else: ?>
-      <a href="/daubs">Daubs</a>
+      <a href="/daubs">DAUBS</a>
     <?php endif; ?>
 
     <?php if ($currentSection === 'diffs'): ?>
-      <span aria-current="page">Diffs</span>
+      <a href="/diffs" aria-current="page">DIFFS</a>
     <?php else: ?>
-      <a href="/diffs">Diffs</a>
+      <a href="/diffs">DIFFS</a>
     <?php endif; ?>
   </nav>
 
   <nav class="topbar-links" aria-label="Site Navigation">
     <a href="#bio-modal">Bio</a>
     <?php if ($currentSection === 'blog'): ?>
-      <span aria-current="page">Blog</span>
+      <a href="/blog" aria-current="page">Blog</a>
     <?php else: ?>
       <a href="/blog">Blog</a>
     <?php endif; ?>
 
     <?php if ($currentSection === 'shop'): ?>
-      <span aria-current="page">Shop</span>
+      <a href="/shop" aria-current="page">Shop</a>
     <?php else: ?>
       <a href="/shop">Shop</a>
     <?php endif; ?>

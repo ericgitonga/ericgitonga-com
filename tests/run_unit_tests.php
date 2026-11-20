@@ -315,6 +315,32 @@ it('MediaService returns complete manifest for Dudus, Daguerreotypes, and Daubs'
     assertTrue(count($manifest['plates']['dudus']) >= 3, 'Dudus must have at least 3 albums');
 });
 
+// ── 10. Unified Navbar Structure ─────────────────────────────────────────────
+it('Navbar renders exact plates on left and utility links on right across all layouts', function () {
+    $currentSection = 'daubs';
+    ob_start();
+    require dirname(__DIR__) . '/src/Views/layouts/navbar.php';
+    $renderedNavbar = ob_get_clean();
+
+    // Plates on left
+    assertTrue(str_contains($renderedNavbar, 'DUDUS'), 'Contains DUDUS plate');
+    assertTrue(str_contains($renderedNavbar, 'DAGUERREOTYPES'), 'Contains DAGUERREOTYPES plate');
+    assertTrue(str_contains($renderedNavbar, 'DAUBS'), 'Contains DAUBS plate');
+    assertTrue(str_contains($renderedNavbar, 'DIFFS'), 'Contains DIFFS plate');
+
+    // Utility links on right
+    assertTrue(str_contains($renderedNavbar, 'Bio'), 'Contains Bio link');
+    assertTrue(str_contains($renderedNavbar, 'Blog'), 'Contains Blog link');
+    assertTrue(str_contains($renderedNavbar, 'Shop'), 'Contains Shop link');
+    assertTrue(str_contains($renderedNavbar, 'Contact'), 'Contains Contact link');
+
+    // No topbar-home
+    assertTrue(!str_contains($renderedNavbar, 'topbar-home'), 'Must not contain old topbar-home');
+
+    // Active state highlighting
+    assertTrue(str_contains($renderedNavbar, 'aria-current="page">DAUBS</a>'), 'DAUBS should have aria-current');
+});
+
 echo "\n────────────────────────────────────────────────────────────\n";
 echo "Tests Passed: {$passed} | Tests Failed: {$failed}\n";
 echo "────────────────────────────────────────────────────────────\n";

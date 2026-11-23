@@ -46,8 +46,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <span>LEARNING</span>
         </div>
         {children}
-        <Analytics />
-        <SpeedInsights />
+        {process.env.NEXT_PUBLIC_ENABLE_TELEMETRY === "true" && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );

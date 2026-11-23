@@ -16,13 +16,22 @@ final class Mailer
             if (!is_dir($dir)) {
                 @mkdir($dir, 0775, true);
             }
+            // Rotate/truncate log if larger than 500KB to prevent indefinite PII retention (#30, H06)
+            if (file_exists($logFile) && filesize($logFile) > 512000) {
+                @rename($logFile, $logFile . '.old');
+            }
+
+            // Redact customer phone numbers, full payment codes, and street addresses in simulation logs (#30, H06)
+            $safeBody = preg_replace('/(\+?254|0\d{2})\d{4}(\d{3})/', '$1****$2', $body);
+            $safeBody = preg_replace('/([A-Z0-9]{3})[A-Z0-9]{4,8}([A-Z0-9]{2})/', '$1****$2', (string)$safeBody);
+
             $entry = sprintf(
                 "[%s] TO: %s | SUBJECT: %s | REPLY-TO: %s\n%s\n----------------------------------------\n",
                 date('Y-m-d H:i:s'),
                 $to,
                 $subject,
                 $replyTo,
-                $body
+                $safeBody
             );
             file_put_contents($logFile, $entry, FILE_APPEND);
             return true;

@@ -138,10 +138,19 @@ async function listAlbums(client, basePath, plate) {
 }
 
 export default async function handler(req, res) {
-  if (
-    process.env.CRON_SECRET &&
-    req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`
-  ) {
+  if (req.method !== "POST" && req.method !== "GET") {
+    res.status(405).json({ error: "Method not allowed" });
+    return;
+  }
+
+  // Fail closed if CRON_SECRET is not configured (#29, H04)
+  if (!process.env.CRON_SECRET) {
+    console.error("CRON_SECRET is not configured; refusing execution");
+    res.status(500).json({ error: "Server configuration error" });
+    return;
+  }
+
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
@@ -154,8 +163,8 @@ export default async function handler(req, res) {
   ];
   const missing = required.filter((name) => !process.env[name]);
   if (missing.length) {
-    console.error("Missing env vars:", missing.join(", "));
-    res.status(500).json({ error: `Missing env vars: ${missing.join(", ")}` });
+    console.error("Missing required environment variables for media sync");
+    res.status(500).json({ error: "Media sync is not properly configured." });
     return;
   }
 
@@ -168,11 +177,9 @@ export default async function handler(req, res) {
       user: process.env.ANGRYHOSTING_FTP_USER,
       password: process.env.ANGRYHOSTING_FTP_PASSWORD,
       secure: process.env.ANGRYHOSTING_FTP_SECURE !== "false",
-      // Shared hosting FTPS commonly serves a cert Node's default CA store
-      // can't chain-verify. Read-only media crawl over an otherwise-encrypted
-      // channel, so this is an accepted tradeoff unless explicitly tightened.
+      // Default to strict certificate verification (#29, H04)
       secureOptions: {
-        rejectUnauthorized: process.env.ANGRYHOSTING_FTP_REJECT_UNAUTHORIZED === "true",
+        rejectUnauthorized: process.env.ANGRYHOSTING_FTP_REJECT_UNAUTHORIZED !== "false",
       },
     });
 

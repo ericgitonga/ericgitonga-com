@@ -467,6 +467,16 @@
         <label for="contact-company">Company</label>
         <input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off">
       </div>
+      <!-- Kenya DPA 2019 Section 29 Notice & Consent (#30, H05) -->
+      <div style="font-size: 0.78rem; color: var(--ink-muted); line-height: 1.4; border-left: 2px solid var(--accent); padding-left: 0.6rem; margin: 0.6rem 0;">
+        <strong>Privacy Notice:</strong> We collect your name, email, and message solely to respond to your inquiry per the Kenya Data Protection Act, 2019. Details are never shared with third parties or used for unsolicited marketing.
+      </div>
+      <div class="form-field" style="flex-direction: row; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.6rem;">
+        <input type="checkbox" id="hub-dpa-consent" name="dpa_consent" value="yes" required style="margin-top: 0.2rem; width: auto;">
+        <label for="hub-dpa-consent" style="text-transform: none; letter-spacing: normal; font-size: 0.78rem; color: var(--ink); line-height: 1.4;">
+          I consent to the processing of my details solely to handle this inquiry.
+        </label>
+      </div>
       <button type="submit" class="form-submit">Send</button>
       <p class="form-status" id="contact-status" role="status" aria-live="polite"></p>
     </form>
@@ -524,7 +534,8 @@
       name: contactForm.name.value,
       email: contactForm.email.value,
       message: contactForm.message.value,
-      company: contactForm.company.value
+      company: contactForm.company.value,
+      dpa_consent: contactForm.dpa_consent ? contactForm.dpa_consent.checked : true
     };
     submitBtn.disabled = true;
     contactStatus.textContent = 'Sending…';

@@ -25,6 +25,13 @@ final class ContactController
             return;
         }
 
+        $consent = (string)($_POST['dpa_consent'] ?? '');
+        if ($consent !== 'yes' && $consent !== '1' && $consent !== 'true' && $consent !== 'on') {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Please accept the data protection notice to submit your message.']);
+            return;
+        }
+
         $name = AntiSpamGate::sanitizeHeader((string)($_POST['name'] ?? ''));
         $email = filter_var(trim((string)($_POST['email'] ?? '')), FILTER_VALIDATE_EMAIL);
         $message = trim((string)($_POST['message'] ?? ''));
@@ -36,7 +43,8 @@ final class ContactController
         }
 
         $subject = "Message from {$name} via ericgitonga.com";
-        $body = "Name: {$name}\nEmail: {$email}\nIP: {$ip}\nDate: " . date('Y-m-d H:i:s') . "\n\nMessage:\n{$message}";
+        // Omit visitor raw IP to comply with Kenya DPA 2019 data minimization principles (#30, H06)
+        $body = "Name: {$name}\nEmail: {$email}\nDate: " . date('Y-m-d H:i:s') . "\n\nMessage:\n{$message}";
 
         $sent = Mailer::send('gitonga@gmail.com', $subject, $body, $email);
         if ($sent) {

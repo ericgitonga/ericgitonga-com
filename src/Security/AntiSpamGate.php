@@ -116,10 +116,20 @@ final class AntiSpamGate
             return ['valid' => false, 'error' => 'Invalid name format'];
         }
 
-        // Layer 5: Circuit-breaker Rate Limiting (per-IP <= 2/15min, global <= 15/hr)
+        // Layer 5: Circuit-breaker Rate Limiting (per-IP <= 2/15min, <= 5/24h, global <= 15/1h per GEMINI.md)
         $ipHash = hash_hmac('sha256', $clientIp, AppConfig::getHmacSecret());
         $currentHour = (int)floor($now / 3600);
+        $window15m = (int)floor($now / 900);
+        $key15m = substr($ipHash, 0, 48) . '_15m';
 
+        // 1. Check per-IP 15-minute rate limit (<= 2 per 15 mins)
+        $stmt15 = $db->prepare("SELECT count FROM spam_rate_limits WHERE ip_hash = ? AND window_hour = ?");
+        $stmt15->execute([$key15m, $window15m]);
+        if ((int)($stmt15->fetchColumn() ?: 0) >= 2) {
+            return ['valid' => false, 'error' => 'Rate limit exceeded (too many attempts in 15 minutes). Please try again later.'];
+        }
+
+        // 2. Check per-IP hourly/daily rate limit (<= 5)
         $limitStmt = $db->prepare("SELECT count FROM spam_rate_limits WHERE ip_hash = ? AND window_hour = ?");
         $limitStmt->execute([$ipHash, $currentHour]);
         $ipCount = (int)($limitStmt->fetchColumn() ?: 0);
@@ -127,15 +137,15 @@ final class AntiSpamGate
             return ['valid' => false, 'error' => 'Rate limit exceeded. Please try again later.'];
         }
 
-        // Global check
-        $globStmt = $db->prepare("SELECT SUM(count) FROM spam_rate_limits WHERE window_hour = ?");
+        // 3. Global circuit-breaker check (<= 15 per hour across all visitors)
+        $globStmt = $db->prepare("SELECT SUM(count) FROM spam_rate_limits WHERE window_hour = ? AND ip_hash NOT LIKE '%_15m'");
         $globStmt->execute([$currentHour]);
         $globalCount = (int)($globStmt->fetchColumn() ?: 0);
-        if ($globalCount >= 25) {
-            return ['valid' => false, 'error' => 'Service is busy. Please try again later.'];
+        if ($globalCount >= 15) {
+            return ['valid' => false, 'error' => 'Service is busy. Please try again in an hour.'];
         }
 
-        // Increment count based on driver
+        // Increment counts
         $driver = $db->getAttribute(\PDO::ATTR_DRIVER_NAME);
         if ($driver === 'mysql') {
             $inc = $db->prepare("INSERT INTO spam_rate_limits (ip_hash, window_hour, count) VALUES (?, ?, 1)
@@ -145,6 +155,7 @@ final class AntiSpamGate
                 ON CONFLICT(ip_hash, window_hour) DO UPDATE SET count = count + 1");
         }
         $inc->execute([$ipHash, $currentHour]);
+        $inc->execute([$key15m, $window15m]);
 
         return ['valid' => true, 'error' => ''];
     }

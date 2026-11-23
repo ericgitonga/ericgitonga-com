@@ -67,24 +67,18 @@ jobs:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          PROD_ENV_CONTENT: ${{ secrets.PROD_ENV_CONTENT }}
         run: |
           python3 - << 'PYEOF'
-          import os, sys, ssl, io
-          from ftplib import FTP_TLS
+          import os, sys, io
+          sys.path.insert(0, ".github/scripts")
+          from ftps_deploy import connect_verified_ftps
 
           host = os.environ["FTP_SERVER"]
           user = os.environ["FTP_USERNAME"]
           passwd = os.environ["FTP_PASSWORD"]
 
-          ctx = ssl.create_default_context()
-          ctx.check_hostname = False
-          ctx.verify_mode = ssl.CERT_NONE
-
-          ftp = FTP_TLS(context=ctx)
-          ftp.connect(host, 21, timeout=60)
-          ftp.auth()
-          ftp.login(user, passwd)
-          ftp.prot_p()
+          ftp = connect_verified_ftps(host, user, passwd, tls_servername="angryhosting.com")
 
           prod_root = "/ericgitonga.com/www"
           try:
@@ -95,23 +89,15 @@ jobs:
 
           files = ftp.nlst()
           if ".env" not in files:
-              print("Creating production .env on remote...")
-              env_content = (
-                  "APP_ENV=production\n"
-                  "APP_URL=https://ericgitonga.com\n"
-                  "MEDIA_BASE_URL=https://media.ericgitonga.com\n"
-                  "DB_DRIVER=mysql\n"
-                  "DB_HOST=localhost\n"
-                  "DB_NAME=egimba_main\n"
-                  "DB_USER=egimba_mainuser\n"
-                  "DB_PASS='oo(*sa011PLS22?><SA&A'\n"
-                  "APP_HMAC_SECRET='prod_hmac_secret_eg_2026_x87a92b'\n"
-                  "SIMULATE_EMAILS=no\n"
-              )
-              ftp.storbinary("STOR .env", io.BytesIO(env_content.encode("utf-8")))
-              print("Uploaded production .env")
+              env_content = os.environ.get("PROD_ENV_CONTENT", "").strip()
+              if env_content:
+                  print("Provisioning production .env from repository secret...")
+                  ftp.storbinary("STOR .env", io.BytesIO((env_content + "\n").encode("utf-8")))
+                  print("Uploaded production .env")
+              else:
+                  print("Notice: .env not found on remote root; please configure PROD_ENV_CONTENT secret if bootstrap is needed.")
           else:
-              print("Production .env already exists on remote.")
+              print("Verified production .env already exists on remote.")
           ftp.quit()
           PYEOF
 

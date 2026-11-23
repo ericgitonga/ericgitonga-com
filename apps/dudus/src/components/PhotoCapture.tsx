@@ -47,6 +47,9 @@ export default function PhotoCapture() {
         className="sr-only"
         aria-label="Capture a photo of a specimen"
       />
+      <p className="mt-2 text-xs text-muted" data-testid="on-device-privacy-notice">
+        🔒 On-device privacy: photos remain strictly on your device. EXIF and location metadata are stripped automatically.
+      </p>
 
       {previewUrl && (
         <div className="mt-4">

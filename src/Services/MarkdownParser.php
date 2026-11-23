@@ -68,12 +68,21 @@ final class MarkdownParser
         $md = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $md);
         $md = preg_replace('/\*([^\*]+)\*/', '<em>$1</em>', $md);
 
-        // Links [text](url)
+        // Links [text](url) with protocol validation (#32, M04)
         $md = preg_replace_callback('/\[([^\]]+)\]\(([^)]+)\)/', function ($m) {
             $text = htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8');
-            $url = htmlspecialchars($m[2], ENT_QUOTES, 'UTF-8');
+            $rawUrl = trim($m[2]);
+            // Disallow javascript:, data:, vbscript: links
+            if (preg_match('/^(?:javascript|data|vbscript):/i', $rawUrl)) {
+                return $text;
+            }
+            $url = htmlspecialchars($rawUrl, ENT_QUOTES, 'UTF-8');
             return "<a href=\"{$url}\">{$text}</a>";
         }, $md);
+
+        // Sanitize any raw embedded active scripts or frames (#32, M04)
+        $md = preg_replace('/<\s*(?:script|iframe|object|embed|applet)[^>]*>.*?<\s*\/\s*(?:script|iframe|object|embed|applet)\s*>/is', '', $md);
+        $md = preg_replace('/<\s*(?:script|iframe|object|embed|applet)[^>]*>/is', '', $md);
 
         // Paragraphs
         $paragraphs = preg_split('/\r?\n\r?\n/', $md);

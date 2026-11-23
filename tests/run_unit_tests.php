@@ -6,6 +6,7 @@ putenv('APP_ENV=testing');
 putenv('APP_URL=https://preview.ericgitonga.com');
 putenv('APP_HMAC_SECRET=test_secret_hmac_key_ericgitonga_2026_test_suite');
 putenv('SIMULATE_EMAILS=yes');
+putenv('DB_SQLITE_PATH=' . sys_get_temp_dir() . '/test_ericgitonga_' . uniqid() . '.sqlite');
 
 $sessionDir = sys_get_temp_dir() . '/ericgitonga_sessions';
 if (!is_dir($sessionDir)) {
@@ -339,6 +340,94 @@ it('Navbar renders exact plates on left and utility links on right across all la
 
     // Active state highlighting
     assertTrue(str_contains($renderedNavbar, 'aria-current="page">DAUBS</a>'), 'DAUBS should have aria-current');
+});
+
+// ── 11. Security & Kenya DPA 2019 Remediations (#24-#32) ─────────────────────
+it('AntiSpamGate enforces per-IP 15-minute rate quota (<= 2 / 15m)', function () {
+    $ip = '10.194.2.55';
+    // 1st submission
+    $t1 = AntiSpamGate::generateProofToken();
+    $p1 = [
+        'website' => '',
+        'ts' => time() - 5,
+        'salt' => $t1['salt'],
+        'sig' => hash_hmac('sha256', (time() - 5) . ':' . $t1['salt'], AppConfig::getHmacSecret()),
+        '_proof' => 'human_token_1',
+        'name' => 'Alice One',
+        'email' => 'alice@example.com',
+        'message' => 'First message',
+    ];
+    $r1 = AntiSpamGate::verifySubmission($p1, $ip);
+    assertTrue($r1['valid'], '1st submission from IP must succeed');
+
+    // 2nd submission
+    $t2 = AntiSpamGate::generateProofToken();
+    $p2 = [
+        'website' => '',
+        'ts' => time() - 5,
+        'salt' => $t2['salt'],
+        'sig' => hash_hmac('sha256', (time() - 5) . ':' . $t2['salt'], AppConfig::getHmacSecret()),
+        '_proof' => 'human_token_2',
+        'name' => 'Alice Two',
+        'email' => 'alice@example.com',
+        'message' => 'Second message',
+    ];
+    $r2 = AntiSpamGate::verifySubmission($p2, $ip);
+    assertTrue($r2['valid'], '2nd submission from IP must succeed');
+
+    // 3rd submission from same IP must be rate-limited
+    $t3 = AntiSpamGate::generateProofToken();
+    $p3 = [
+        'website' => '',
+        'ts' => time() - 5,
+        'salt' => $t3['salt'],
+        'sig' => hash_hmac('sha256', (time() - 5) . ':' . $t3['salt'], AppConfig::getHmacSecret()),
+        '_proof' => 'human_token_3',
+        'name' => 'Alice Three',
+        'email' => 'alice@example.com',
+        'message' => 'Third message',
+    ];
+    $r3 = AntiSpamGate::verifySubmission($p3, $ip);
+    assertTrue(!$r3['valid'], '3rd submission from IP in 15m must be rate-limited');
+    assertTrue(str_contains($r3['error'], 'Rate limit exceeded'), 'Must report rate limit');
+});
+
+it('MarkdownParser strips javascript: protocols and active scripts (M04)', function () {
+    $xssLink = '[Click me](javascript:alert(1)) and [Good](https://ericgitonga.com)';
+    $parsed = \EricGitonga\Services\MarkdownParser::renderHtml($xssLink);
+    assertTrue(!str_contains($parsed, 'href="javascript:'), 'Must not render javascript: href');
+    assertTrue(str_contains($parsed, 'Click me'), 'Must render anchor text safely');
+    assertTrue(str_contains($parsed, 'href="https://ericgitonga.com"'), 'Must render valid link');
+
+    $scriptMd = "Hello <script>alert('xss')</script> world";
+    $parsedScript = \EricGitonga\Services\MarkdownParser::renderHtml($scriptMd);
+    assertTrue(!str_contains($parsedScript, '<script>'), 'Must strip script tags');
+});
+
+it('Database schema initializes orders table and stores order atomically', function () {
+    $db = \EricGitonga\Config\Database::getPdo();
+    $orderId = 'ord_test_' . bin2hex(random_bytes(4));
+    $stmt = $db->prepare("INSERT INTO orders (order_id, customer_name, customer_email, customer_phone, mpesa_code_preview, amount, status, delivery_address, items_json, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, 'pending_verification', ?, ?, ?)");
+    $stmt->execute([
+        $orderId,
+        'Test Customer',
+        'test@example.com',
+        '0722123456',
+        'QA1***5D',
+        15000,
+        'Nairobi, Kenya',
+        json_encode([['title' => 'Sample Print', 'qty' => 1]]),
+        time(),
+    ]);
+
+    $fetch = $db->prepare("SELECT * FROM orders WHERE order_id = ?");
+    $fetch->execute([$orderId]);
+    $order = $fetch->fetch();
+    assertTrue(!empty($order), 'Order must be persisted in database');
+    assertEquals('Test Customer', $order['customer_name']);
+    assertEquals('pending_verification', $order['status']);
+    assertEquals(15000, (int)$order['amount']);
 });
 
 echo "\n────────────────────────────────────────────────────────────\n";

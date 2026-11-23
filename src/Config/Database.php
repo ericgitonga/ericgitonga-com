@@ -96,6 +96,19 @@ final class Database
                 amount INT UNSIGNED NOT NULL,
                 created_at INT UNSIGNED NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+            $pdo->exec("CREATE TABLE IF NOT EXISTS orders (
+                order_id VARCHAR(32) PRIMARY KEY,
+                customer_name VARCHAR(191) NOT NULL,
+                customer_email VARCHAR(191) NOT NULL,
+                customer_phone VARCHAR(64) NOT NULL,
+                mpesa_code_preview VARCHAR(32) NOT NULL,
+                amount INT UNSIGNED NOT NULL,
+                status VARCHAR(32) NOT NULL DEFAULT 'pending_verification',
+                delivery_address TEXT NOT NULL,
+                items_json TEXT NOT NULL,
+                created_at INT UNSIGNED NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         } else {
             $pdo->exec("CREATE TABLE IF NOT EXISTS used_signatures (
                 sig TEXT PRIMARY KEY,
@@ -114,6 +127,19 @@ final class Database
                 code_preview TEXT NOT NULL,
                 customer_email TEXT NOT NULL,
                 amount INTEGER NOT NULL,
+                created_at INTEGER NOT NULL
+            )");
+
+            $pdo->exec("CREATE TABLE IF NOT EXISTS orders (
+                order_id TEXT PRIMARY KEY,
+                customer_name TEXT NOT NULL,
+                customer_email TEXT NOT NULL,
+                customer_phone TEXT NOT NULL,
+                mpesa_code_preview TEXT NOT NULL,
+                amount INTEGER NOT NULL,
+                status TEXT NOT NULL DEFAULT 'pending_verification',
+                delivery_address TEXT NOT NULL,
+                items_json TEXT NOT NULL,
                 created_at INTEGER NOT NULL
             )");
         }

@@ -29,6 +29,6 @@ final class MpesaLedger
             VALUES (?, ?, ?, ?, ?)");
         $ins->execute([$hash, $preview, $email, $amount, time()]);
 
-        return ['success' => true, 'clean_code' => $clean];
+        return ['success' => true, 'clean_code' => $clean, 'code_preview' => $preview];
     }
 }

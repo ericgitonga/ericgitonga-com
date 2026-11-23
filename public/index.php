@@ -3,6 +3,25 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/src/Bootstrap.php';
 
+// Check for active deployment maintenance gate (#31, H07)
+$maintFile = dirname(__DIR__) . '/.maintenance_deploy.json';
+if (file_exists($maintFile)) {
+    $maint = @json_decode((string)@file_get_contents($maintFile), true);
+    if (is_array($maint) && !empty($maint['active'])) {
+        $started = (int)($maint['started_at_ts'] ?? 0);
+        if ($started > 0 && (time() - $started) < 300) {
+            http_response_code(503);
+            header('Retry-After: 5');
+            header('Content-Type: text/html; charset=utf-8');
+            echo '<!DOCTYPE html><html lang="en"><head><title>System Maintenance — ericgitonga.com</title>'
+               . '<meta name="viewport" content="width=device-width, initial-scale=1">'
+               . '<style>body{font-family:sans-serif;background:#0d0d0d;color:#e6e6e6;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;padding:1rem;text-align:center;}h1{font-weight:400;font-size:1.5rem;letter-spacing:0.05em;}p{color:#888;}</style>'
+               . '</head><body><div><h1>UPDATING PLATFORM</h1><p>A scheduled release is currently being deployed. Please refresh in a few seconds.</p></div></body></html>';
+            exit;
+        }
+    }
+}
+
 use EricGitonga\Router;
 use EricGitonga\Controllers\HubController;
 use EricGitonga\Controllers\GalleryController;

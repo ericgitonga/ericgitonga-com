@@ -7,6 +7,19 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.5.0] - 2026-11-23
+
+### Security & Privacy (Adversarial Audit Remediations)
+- **Eliminated Production Credential Literals in CI**: Removed plaintext password and secret values from `.github/workflows/deploy-prod.yml`, loading config strictly from environment secrets (`PROD_ENV_CONTENT`) (#25).
+- **Hardened FTPS Deployment TLS**: Replaced unverified FTPS peer settings in `.github/workflows/deploy-prod.yml` with strict TLS 1.2+ certificate chain validation (`connect_verified_ftps`) targeting `angryhosting.com` with Let's Encrypt Gen-Y intermediate bundle (#26).
+- **Atomic Order Persistence & Verification Status**: Added `orders` schema table in `Database.php`, persisted checkout orders with unique ID (`ord_...`) and status `pending_verification`, and sanitized notification email subjects (#27).
+- **7-Layer Anti-Spam Gate Integration**: Extended workspace anti-spam verification to shop checkout (`checkout.php`, `ShopController.php`) and hardened Vercel Hub contact form (`apps/hub/api/contact.js`) with heuristic filters, shouting detection, length bounds, and circuit-breaker rate limits (#28).
+- **Gallery Cron & FTPS Security**: Enforced mandatory `CRON_SECRET` authorization (failing closed if unset), restricted HTTP methods, and defaulted FTPS connection to strict TLS certificate validation in `apps/hub/api/sync-media.js` (#29).
+- **Kenya DPA 2019 Section 29 Compliance & IP Redaction**: Added statutory privacy notices and explicit consent checkboxes across contact dialogs (`modal-contact.php`, `apps/hub/index.html`) and checkout (`checkout.php`). Redacted raw visitor IP from email notification bodies and added automatic log rotation/redaction in `Mailer.php` (#30).
+- **Deployment Maintenance Gate**: Added front controller check in `public/index.php` for `.maintenance_deploy.json`, returning HTTP 503 with `Retry-After: 5` and a clean status message during file promotion (#31).
+- **Rate Quota Hardening & Child Telemetry Consent Gate**: Enforced per-IP rate limit quotas (<= 2 / 15m, <= 5 / 24h, global <= 15 / 1h) in `AntiSpamGate.php`, bounded cart quantities, sanitized Markdown links/scripts in `MarkdownParser.php`, added on-device privacy reassurance notice in `PhotoCapture.tsx`, and consent-gated Vercel telemetry in `apps/dudus/src/app/layout.tsx` (#32).
+- Closes #24, closes #25, closes #26, closes #27, closes #28, closes #29, closes #30, closes #31, closes #32.
+
 ## [0.4.3] - 2026-11-20
 
 ### Changed

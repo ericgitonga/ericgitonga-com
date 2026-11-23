@@ -31,10 +31,26 @@ final class CartService
         return self::revalidateCart($_SESSION['cart'] ?? []);
     }
 
+    public static function getCsrfToken(): string
+    {
+        self::startSession();
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(16));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
+    public static function verifyCsrfToken(?string $token): bool
+    {
+        self::startSession();
+        $expected = (string)($_SESSION['csrf_token'] ?? '');
+        return !empty($expected) && !empty($token) && hash_equals($expected, $token);
+    }
+
     public static function addItem(string $photoId, string $productType, string $size, int $qty): bool
     {
         self::startSession();
-        if ($qty <= 0) {
+        if ($qty <= 0 || $qty > 20) {
             return false;
         }
 

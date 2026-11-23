@@ -8,6 +8,7 @@ use EricGitonga\Services\CartService;
 use EricGitonga\Services\MpesaLedger;
 use EricGitonga\Services\Mailer;
 use EricGitonga\Security\AntiSpamGate;
+use EricGitonga\Config\Database;
 
 final class ShopController
 {
@@ -161,6 +162,12 @@ final class ShopController
     public function checkoutSubmit(): void
     {
         header('Content-Type: application/json');
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+
         $items = CartService::getCart();
         $total = CartService::totalAmount();
 
@@ -170,19 +177,42 @@ final class ShopController
             return;
         }
 
-        $customerName = AntiSpamGate::sanitizeHeader((string)($_POST['name'] ?? ''));
-        $customerEmail = filter_var(trim((string)($_POST['email'] ?? '')), FILTER_VALIDATE_EMAIL);
-        $customerPhone = AntiSpamGate::sanitizeHeader((string)($_POST['phone'] ?? ''));
-        $mpesaCode = trim((string)($_POST['mpesa_code'] ?? ''));
-        $address = trim((string)($_POST['delivery_address'] ?? ''));
-
-        if ($customerName === '' || !$customerEmail || $customerPhone === '' || $mpesaCode === '') {
+        // Layer 1-5: Anti-Spam Gate Verification (#28, H03)
+        $clientIp = (string)($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
+        $verify = AntiSpamGate::verifySubmission($_POST, $clientIp);
+        if (!$verify['valid']) {
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Please provide all required fields including your M-Pesa confirmation code.']);
+            echo json_encode(['success' => false, 'error' => $verify['error']]);
             return;
         }
 
-        // Anti-replay check & record
+        // Kenya DPA 2019 Section 29 & 32 Consent Verification (#30, H05)
+        $consent = (string)($_POST['dpa_consent'] ?? '');
+        if ($consent !== 'yes' && $consent !== '1' && $consent !== 'true' && $consent !== 'on') {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Please accept the data protection notice to proceed with checkout.']);
+            return;
+        }
+
+        $customerName = AntiSpamGate::sanitizeHeader((string)($_POST['name'] ?? ''));
+        $customerEmail = filter_var(trim((string)($_POST['email'] ?? '')), FILTER_VALIDATE_EMAIL);
+        $customerPhone = AntiSpamGate::sanitizeHeader((string)($_POST['phone'] ?? ''));
+        $mpesaCode = strtoupper(trim((string)($_POST['mpesa_code'] ?? '')));
+        $address = trim((string)($_POST['delivery_address'] ?? ''));
+
+        if ($customerName === '' || !$customerEmail || $customerPhone === '' || $mpesaCode === '' || $address === '') {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Please provide all required fields including delivery address and M-Pesa reference.']);
+            return;
+        }
+
+        if (strlen($customerName) > 120 || strlen($customerPhone) > 40 || strlen($mpesaCode) > 20 || strlen($address) > 1000) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Input exceeds maximum allowed length.']);
+            return;
+        }
+
+        // M-Pesa payment deduplication and registration (#27, H01)
         $record = MpesaLedger::checkAndRecord($mpesaCode, $customerEmail, $total);
         if (!$record['success']) {
             http_response_code(400);
@@ -190,7 +220,33 @@ final class ShopController
             return;
         }
 
-        // Build order details
+        $codePreview = $record['code_preview'] ?? (substr($mpesaCode, 0, 3) . '***' . substr($mpesaCode, -2));
+        $orderId = 'ord_' . bin2hex(random_bytes(6));
+        $now = time();
+
+        // Atomically persist order record in database (#27, H02)
+        try {
+            $db = Database::getPdo();
+            $stmt = $db->prepare("INSERT INTO orders (order_id, customer_name, customer_email, customer_phone, mpesa_code_preview, amount, status, delivery_address, items_json, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'pending_verification', ?, ?, ?)");
+            $stmt->execute([
+                $orderId,
+                $customerName,
+                $customerEmail,
+                $customerPhone,
+                $codePreview,
+                $total,
+                $address,
+                json_encode($items, JSON_UNESCAPED_SLASHES),
+                $now,
+            ]);
+        } catch (\Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Database error registering order. Please contact support.']);
+            return;
+        }
+
+        // Build order details for notification
         $orderLines = [];
         foreach ($items as $item) {
             $orderLines[] = sprintf("- %s (%s, %s): %d x KES %s = KES %s",
@@ -204,17 +260,19 @@ final class ShopController
         }
         $orderSummary = implode("\n", $orderLines);
 
-        // Send notification to Eric
-        $subject = "NEW ORDER: KES " . number_format($total) . " from {$customerName} (M-Pesa: {$record['clean_code']})";
+        // Send order notification without broadcasting full payment reference in subject line (#30, H06)
+        $subject = "NEW ORDER #{$orderId}: KES " . number_format($total) . " from {$customerName}";
         $body = "A new print shop order has been placed!\n\n" .
+                "Order ID: {$orderId}\n" .
                 "Customer: {$customerName}\n" .
                 "Email: {$customerEmail}\n" .
                 "Phone: {$customerPhone}\n" .
-                "M-Pesa Code: {$record['clean_code']}\n" .
+                "Payment Ref (preview): {$codePreview}\n" .
+                "Payment Status: Pending Verification\n" .
                 "Delivery Address: {$address}\n\n" .
                 "Order Total: KES " . number_format($total) . "\n\n" .
                 "Items:\n{$orderSummary}\n\n" .
-                "Date: " . date('Y-m-d H:i:s') . "\n";
+                "Placed At: " . date('Y-m-d H:i:s', $now) . " EAT\n";
 
         Mailer::send('gitonga@gmail.com', $subject, $body, $customerEmail);
 
@@ -223,7 +281,8 @@ final class ShopController
 
         echo json_encode([
             'success' => true,
-            'message' => 'Thank you! Your order has been placed and payment registered. We will confirm shortly via email.',
+            'order_id' => $orderId,
+            'message' => "Thank you, {$customerName}! Order #{$orderId} placed. Your payment reference ({$codePreview}) has been recorded for verification. We will send a confirmation email shortly.",
         ]);
     }
 }

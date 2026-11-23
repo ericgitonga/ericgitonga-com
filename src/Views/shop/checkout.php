@@ -1,6 +1,7 @@
 <?php
 /** @var array $items */
 /** @var int $total */
+$proof = \EricGitonga\Security\AntiSpamGate::generateProofToken();
 ?>
 <style>
   .checkout-page {
@@ -106,7 +107,17 @@
     </ol>
   </div>
 
-  <form class="checkout-form" id="checkout-form">
+  <form class="checkout-form" id="checkout-form" method="POST" action="/api/shop/checkout">
+    <!-- 7-Layer Anti-Spam Security Tokens (#28, H03) -->
+    <div class="form-field hp-field" style="display:none;" aria-hidden="true">
+      <label for="order-website">Website</label>
+      <input id="order-website" name="website" type="text" tabindex="-1" autocomplete="nope">
+    </div>
+    <input type="hidden" name="ts" value="<?= (int)$proof['timestamp'] ?>">
+    <input type="hidden" name="salt" value="<?= htmlspecialchars((string)$proof['salt'], ENT_QUOTES, 'UTF-8') ?>">
+    <input type="hidden" name="sig" value="<?= htmlspecialchars((string)$proof['signature'], ENT_QUOTES, 'UTF-8') ?>">
+    <input type="hidden" name="_proof" id="order-proof" value="">
+
     <div class="form-field">
       <label for="order-name">Your Full Name</label>
       <input id="order-name" name="name" type="text" required>
@@ -132,6 +143,17 @@
       <textarea id="order-address" name="delivery_address" rows="3" placeholder="Town, Estate/Street, or preferred collection station" required></textarea>
     </div>
 
+    <!-- Kenya DPA 2019 Section 29 Notice & Consent (#30, H05) -->
+    <div style="font-size: 0.8rem; color: var(--ink-muted); line-height: 1.5; border-left: 2px solid var(--accent); padding-left: 0.8rem; margin: 0.5rem 0;">
+      <strong>Privacy Notice (Kenya DPA 2019):</strong> We collect your name, email, phone number, and delivery details solely to process, deliver, and verify your order. Your details are never sold, shared with third parties, or used for unsolicited marketing.
+    </div>
+    <div class="form-field" style="flex-direction: row; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
+      <input type="checkbox" id="order-dpa-consent" name="dpa_consent" value="yes" required style="margin-top: 0.2rem; width: auto;">
+      <label for="order-dpa-consent" style="text-transform: none; letter-spacing: normal; font-size: 0.85rem; color: var(--ink); line-height: 1.4;">
+        I consent to the collection and processing of my contact and delivery details solely to fulfill this order.
+      </label>
+    </div>
+
     <button type="submit" class="btn-submit-order" id="btn-submit-order">Confirm Payment & Submit Order</button>
     <p id="checkout-feedback" style="font-family: var(--mono); font-size: .8rem; margin-top: .5rem;"></p>
   </form>
@@ -144,6 +166,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const feedback = document.getElementById('checkout-feedback');
 
   if (form) {
+    // Populate Layer 3 Proof Token on real user interaction (#28)
+    const proofInput = document.getElementById('order-proof');
+    const setProof = () => {
+      if (proofInput && !proofInput.value) {
+        proofInput.value = 'human_' + Date.now();
+      }
+    };
+    ['focusin', 'keydown', 'pointerdown', 'touchstart'].forEach(evt => {
+      form.addEventListener(evt, setProof, { passive: true, once: true });
+    });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       btn.disabled = true;

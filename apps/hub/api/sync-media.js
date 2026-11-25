@@ -17,7 +17,7 @@ import { put, head } from "@vercel/blob";
 import sharp from "sharp";
 import { PassThrough } from "node:stream";
 
-const PLATES = ["Dudus", "Daguerreotypes", "Daubs"];
+const PLATES = ["Dudus", "Drops", "Daguerreotypes", "Daubs"];
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
 const THUMBNAIL_WIDTH = 400;
 const THUMBNAIL_QUALITY = 78;

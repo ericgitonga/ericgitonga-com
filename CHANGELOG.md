@@ -7,6 +7,13 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.6.1] - 2026-11-26
+
+### Added & Changed
+- **3-over-2 Centered Wall Layout**: Formatted the homepage wall into an architectural 6-column grid with equal-height rows, displaying the first three plates (Plate I: Dudus, Plate II: Drops, Plate III: Daguerreotypes) across the top row, and centering the last two plates (Plate IV: Daubs, Plate V: Diffs) directly below them.
+- **Updated Drops Hero & Album Cover (`d_03.jpg`)**: Adopted droplet collision sculpture `d_03.jpg` (`/home/gitonga/Pictures/Yangu/Water Drops/Drops/d_03.jpg`) as the hero cover across `apps/hub/assets/hub/drops.jpg` and `public/assets/hub/drops.jpg`, as well as the album cover thumbnail.
+- **Direct Edge CDN Media Accessibility for Drops**: Bundled all 17 high-speed water droplet collision art photographs into `apps/hub/assets/drops/` for immediate global edge delivery, registered the collection in `apps/hub/api/media-manifest.js`, added `Drops` to `PLATES` in `apps/hub/api/sync-media.js`, and synced `content/media/manifest.json`.
+
 ## [0.6.0] - 2026-11-26
 
 ### Added

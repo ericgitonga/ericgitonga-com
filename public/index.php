@@ -37,6 +37,7 @@ $router->get('/', [HubController::class, 'index']);
 $router->get('/daguerreotypes', [HubController::class, 'daguerreotypes']);
 $router->get('/daubs', [HubController::class, 'daubs']);
 $router->get('/diffs', [HubController::class, 'diffs']);
+$router->get('/drops', [HubController::class, 'drops']);
 $router->get('/api/health', [HubController::class, 'health']);
 
 // ── Media Manifest ──

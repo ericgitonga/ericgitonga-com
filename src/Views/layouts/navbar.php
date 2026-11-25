@@ -12,6 +12,12 @@ $currentSection = $currentSection ?? '';
       <a href="/dudus">DUDUS</a>
     <?php endif; ?>
 
+    <?php if ($currentSection === 'drops'): ?>
+      <a href="/drops" aria-current="page">DROPS</a>
+    <?php else: ?>
+      <a href="/drops">DROPS</a>
+    <?php endif; ?>
+
     <?php if ($currentSection === 'daguerreotypes'): ?>
       <a href="/daguerreotypes" aria-current="page">DAGUERREOTYPES</a>
     <?php else: ?>

@@ -59,6 +59,19 @@ final class HubController
         require dirname(__DIR__) . '/Views/layouts/base.php';
     }
 
+    public function drops(): void
+    {
+        $title = 'Drops — Eric Gitonga';
+        $description = 'High-speed water droplet collision art — liquid sculptures captured in a fraction of a millisecond.';
+        $currentSection = 'drops';
+
+        ob_start();
+        require dirname(__DIR__) . '/Views/gallery/drops.php';
+        $content = ob_get_clean();
+
+        require dirname(__DIR__) . '/Views/layouts/base.php';
+    }
+
     public function health(): void
     {
         header('Content-Type: application/json');

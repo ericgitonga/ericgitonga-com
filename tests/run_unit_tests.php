@@ -304,13 +304,15 @@ it('Router dispatches static and dynamic routes', function () {
 });
 
 // ── 9. Media Manifest ────────────────────────────────────────────────────────
-it('MediaService returns complete manifest for Dudus, Daguerreotypes, and Daubs', function () {
+it('MediaService returns complete manifest for Dudus, Daguerreotypes, Daubs, and Drops', function () {
     $manifest = \EricGitonga\Services\MediaService::getManifest();
     assertTrue(is_array($manifest), 'Manifest should be array');
     assertTrue(isset($manifest['plates']), 'Manifest should have plates');
     assertTrue(isset($manifest['plates']['dudus']), 'Plates should have dudus');
     assertTrue(isset($manifest['plates']['daguerreotypes']), 'Plates should have daguerreotypes');
     assertTrue(isset($manifest['plates']['daubs']), 'Plates should have daubs');
+    assertTrue(isset($manifest['plates']['drops']), 'Plates should have drops');
+    assertTrue(count($manifest['plates']['drops']) >= 1, 'Drops must have at least 1 album');
     assertTrue(count($manifest['plates']['daubs']) >= 3, 'Daubs must have at least 3 albums');
     assertTrue(count($manifest['plates']['daguerreotypes']) >= 3, 'Daguerreotypes must have at least 3 albums');
     assertTrue(count($manifest['plates']['dudus']) >= 3, 'Dudus must have at least 3 albums');
@@ -328,6 +330,7 @@ it('Navbar renders exact plates on left and utility links on right across all la
     assertTrue(str_contains($renderedNavbar, 'DAGUERREOTYPES'), 'Contains DAGUERREOTYPES plate');
     assertTrue(str_contains($renderedNavbar, 'DAUBS'), 'Contains DAUBS plate');
     assertTrue(str_contains($renderedNavbar, 'DIFFS'), 'Contains DIFFS plate');
+    assertTrue(str_contains($renderedNavbar, 'DROPS'), 'Contains DROPS plate');
 
     // Utility links on right
     assertTrue(str_contains($renderedNavbar, 'Bio'), 'Contains Bio link');

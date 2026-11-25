@@ -79,7 +79,7 @@
 </style>
 
 <div class="plate-page">
-  <span class="plate-no">PLATE IV</span>
+  <span class="plate-no">PLATE V</span>
   <h1>Diffs</h1>
   <p class="intro">Software and systems — Eric Gitonga's technical practice. Selected tools, platforms, and products.</p>
 

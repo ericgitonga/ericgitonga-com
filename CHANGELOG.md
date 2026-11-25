@@ -7,6 +7,15 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.6.0] - 2026-11-26
+
+### Added
+- **Plate II: Drops (High-Speed Droplet Art Gallery)**: Positioned Drops immediately following Dudus across the home wall and top navigation bar, sequencing plates as Plate I (Dudus), Plate II (Drops), Plate III (Daguerreotypes), Plate IV (Daubs), and Plate V (Diffs).
+- **Web-Optimized Drops Collection**: Processed and catalogued 17 high-speed water droplet collision photographs from `/home/gitonga/Pictures/Yangu/Drops` into `public/media/drops/Drops/`, generated album thumbnail `cover.jpg`, and added hero plate card `public/assets/hub/drops.jpg`.
+- **Media Manifest Registration**: Extended `content/media/manifest.json` and `MediaService.php` with the `drops` plate specification.
+- **Interactive Gallery & Route**: Added `/drops` route dispatched via `HubController::drops()`, rendered through `src/Views/gallery/drops.php` with Dan Winters modal viewer (`initGallery('drops')`).
+- **5-Column Wall & Unified Navbar**: Updated the home wall grid in `src/Views/hub/index.php` and `apps/hub/index.html` to support 5 plates with responsive breakpoints, and integrated `DROPS` across the topbar navigation.
+
 ## [0.5.0] - 2026-11-23
 
 ### Security & Privacy (Adversarial Audit Remediations)

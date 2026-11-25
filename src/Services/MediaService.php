@@ -17,6 +17,7 @@ final class MediaService
                     'dudus' => [],
                     'daguerreotypes' => [],
                     'daubs' => [],
+                    'drops' => [],
                 ],
             ];
         }

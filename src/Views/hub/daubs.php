@@ -85,7 +85,7 @@
 </style>
 
 <div class="plate-page">
-  <span class="plate-no">PLATE III</span>
+  <span class="plate-no">PLATE IV</span>
   <h1>Daubs</h1>
   <p class="intro">Drawings, watercolours, and marks made for their own sake — informal work from sketchbook to finished paper.</p>
 

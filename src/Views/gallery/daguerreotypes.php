@@ -85,7 +85,7 @@
 </style>
 
 <div class="plate-page">
-  <span class="plate-no">PLATE II</span>
+  <span class="plate-no">PLATE III</span>
   <h1>Daguerreotypes</h1>
   <p class="intro">Photographs — landscapes, portraits, and documentary moments from Kenya and beyond.</p>
 

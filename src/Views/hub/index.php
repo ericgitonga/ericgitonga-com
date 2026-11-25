@@ -2,7 +2,7 @@
   .wall {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
   .plate {
     position: relative;
@@ -61,10 +61,16 @@
     color: var(--accent);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1050px) {
+    .wall { grid-template-columns: repeat(3, 1fr); }
+    .plate:nth-child(3) { border-right: none; }
+    .plate:nth-child(1), .plate:nth-child(2), .plate:nth-child(3) { border-bottom: 1px solid var(--line); }
+  }
+  @media (max-width: 760px) {
     .wall { grid-template-columns: repeat(2, 1fr); }
-    .plate:nth-child(2) { border-right: none; }
-    .plate:nth-child(1), .plate:nth-child(2) { border-bottom: 1px solid var(--line); }
+    .plate { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .plate:nth-child(2n) { border-right: none; }
+    .plate:last-child { border-bottom: none; }
   }
   @media (max-width: 580px) {
     .wall { grid-template-columns: 1fr; }
@@ -84,13 +90,24 @@
       <span class="dest">ericgitonga.com/dudus</span>
     </div>
   </a>
+
+  <a class="plate" href="/drops" data-cat="drops">
+    <div class="art">
+      <img src="/assets/hub/drops.jpg" alt="High-speed water droplet collision art" width="1500" height="1000" loading="lazy">
+    </div>
+    <div class="label">
+      <span class="plate-no">PLATE II</span>
+      <h2>Drops</h2>
+      <span class="dest">ericgitonga.com/drops</span>
+    </div>
+  </a>
     
   <a class="plate" href="/daguerreotypes" data-cat="daguerreotypes">
     <div class="art">
       <img src="/assets/hub/daguerreotypes.jpg" alt="A solitary baobab-like tree trunk against dawn sky" width="1499" height="1000" loading="lazy">
     </div>
     <div class="label">
-      <span class="plate-no">PLATE II</span>
+      <span class="plate-no">PLATE III</span>
       <h2>Daguerreotypes</h2>
       <span class="dest">ericgitonga.com/daguerreotypes</span>
     </div>
@@ -101,7 +118,7 @@
       <img src="/assets/hub/daubs.jpg" alt="An ink illustration of an insect head in progress" width="1300" height="1000" loading="lazy">
     </div>
     <div class="label">
-      <span class="plate-no">PLATE III</span>
+      <span class="plate-no">PLATE IV</span>
       <h2>Daubs</h2>
       <span class="dest">ericgitonga.com/daubs</span>
     </div>
@@ -112,7 +129,7 @@
       <img src="/assets/hub/diffs.jpg" alt="Software source file" width="1226" height="1000" loading="lazy">
     </div>
     <div class="label">
-      <span class="plate-no">PLATE IV</span>
+      <span class="plate-no">PLATE V</span>
       <h2>Diffs</h2>
       <span class="dest">ericgitonga.com/diffs</span>
     </div>

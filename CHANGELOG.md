@@ -7,6 +7,11 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.6.2] - 2026-11-27
+
+### Added
+- **Water Droplet Collision Art Addition (`d_18.jpg`)**: Catalogued droplet collision photograph `d_18.jpg` (`/home/gitonga/Pictures/Yangu/Water Drops/Drops/d_18.jpg`) into `apps/hub/assets/drops/` and `public/media/drops/Drops/`, and registered it in `apps/hub/api/media-manifest.js` and `content/media/manifest.json`.
+
 ## [0.6.1] - 2026-11-26
 
 ### Added & Changed

@@ -26,7 +26,8 @@ const DROPS_ALBUM = [
       { filename: "d_14.jpg", url: "/assets/drops/d_14.jpg" },
       { filename: "d_15.jpg", url: "/assets/drops/d_15.jpg" },
       { filename: "d_16.jpg", url: "/assets/drops/d_16.jpg" },
-      { filename: "d_17.jpg", url: "/assets/drops/d_17.jpg" }
+      { filename: "d_17.jpg", url: "/assets/drops/d_17.jpg" },
+      { filename: "d_18.jpg", url: "/assets/drops/d_18.jpg" }
     ]
   }
 ];

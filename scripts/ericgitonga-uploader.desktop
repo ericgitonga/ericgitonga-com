@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Eric Gitonga Media Uploader
+Comment=Direct Photo Intake for ericgitonga.com galleries
+Exec=python3 /home/gitonga/Develop/projects/ericgitonga-com/scripts/upload_photo_gui.py
+Icon=camera-photo
+Terminal=false
+Categories=Graphics;Photography;Utility;

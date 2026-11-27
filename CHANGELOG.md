@@ -7,6 +7,12 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.7.1] - 2026-11-27
+
+### Added
+- **Desktop Native & Web GUI Uploaders**: Added `scripts/upload_photo_gui.py` (Tkinter native desktop app with image thumbnail preview) and `scripts/upload_gui_web.py` (Streamlit browser app with drag-and-drop) for 1-click photo intake.
+- **Media Upload Guide**: Authored comprehensive documentation in `docs/MEDIA_UPLOAD_GUIDE.md` detailing architecture, direct upload workflows, album conventions, cover handling, and troubleshooting.
+
 ## [0.7.0] - 2026-11-27
 
 ### Added & Enhanced

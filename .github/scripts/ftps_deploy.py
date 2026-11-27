@@ -36,6 +36,8 @@ FORBIDDEN_PREFIXES = (
     "public/uploads/",
     "Daguerreotypes/",
     "Dudus/",
+    "Drops/",
+    "Daubs/",
     "media/",
     ".git/",
 )

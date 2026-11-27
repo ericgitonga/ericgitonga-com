@@ -16,6 +16,8 @@ import { Client } from "basic-ftp";
 import { put, head } from "@vercel/blob";
 import sharp from "sharp";
 import { PassThrough } from "node:stream";
+import fs from "node:fs";
+import tls from "node:tls";
 
 const PLATES = ["Dudus", "Drops", "Daguerreotypes", "Daubs"];
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
@@ -171,15 +173,31 @@ export default async function handler(req, res) {
   const basePath = (process.env.ANGRYHOSTING_FTP_BASE_PATH || "").replace(/\/+$/, "");
   const client = new Client();
 
+  let caBundle;
+  try {
+    const pemUrl = new URL("./letsencrypt_geny_intermediates.pem", import.meta.url);
+    if (fs.existsSync(pemUrl)) {
+      const extraCAs = fs
+        .readFileSync(pemUrl, "utf8")
+        .split(/(?=-----BEGIN CERTIFICATE-----)/g)
+        .filter((c) => c.trim().length > 0);
+      caBundle = [...tls.rootCertificates, ...extraCAs];
+    }
+  } catch (caErr) {
+    console.warn("Could not load intermediate CA bundle:", caErr);
+  }
+
   try {
     await client.access({
       host: process.env.ANGRYHOSTING_FTP_HOST,
       user: process.env.ANGRYHOSTING_FTP_USER,
       password: process.env.ANGRYHOSTING_FTP_PASSWORD,
       secure: process.env.ANGRYHOSTING_FTP_SECURE !== "false",
-      // Default to strict certificate verification (#29, H04)
+      // Default to strict certificate verification (#29, H04) with Gen-Y intermediate chaining
       secureOptions: {
         rejectUnauthorized: process.env.ANGRYHOSTING_FTP_REJECT_UNAUTHORIZED !== "false",
+        ca: caBundle,
+        servername: "angryhosting.com",
       },
     });
 

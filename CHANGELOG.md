@@ -7,6 +7,14 @@ adheres to [Semantic Versioning](https://semver.org) (pre-1.0: MINOR = new featu
 behaviour, PATCH = fixes/docs/housekeeping). One shared version across every app in `apps/` — any
 change to any component bumps this same number, by design (see README's "Versioning" section).
 
+## [0.7.0] - 2026-11-27
+
+### Added & Enhanced
+- **Dynamic Drops Manifest Crawling**: Updated `apps/hub/api/media-manifest.js` to serve dynamic Drops collections crawled from Angry Hosting via Vercel Blob with seamless fallback to bundled static assets.
+- **FTPS Intermediate TLS Validation for Media Sync**: Bundled Let's Encrypt Gen-Y intermediate certificate chain in `apps/hub/api/sync-media.js` and `letsencrypt_geny_intermediates.pem`, resolving unchained server cert verification so the daily/on-demand media sync succeeds strictly without TLS errors.
+- **Protected Remote Drops Storage**: Added `Drops/` and `Daubs/` to `FORBIDDEN_PREFIXES` in `.github/scripts/ftps_deploy.py` to prevent code deployment workflows from modifying or retiring client-uploaded media directories.
+- **Direct CLI Photo Uploader (`scripts/upload_plate_photo.py`)**: Added an automated 1-click photo uploader tool that connects to Angry Hosting via strict TLS 1.2+ FTPS, verifies remote byte size, and triggers an instant Vercel Blob manifest rebuild via `/api/sync-media`—bypassing Git commits, PRs, and manual redeployments completely.
+
 ## [0.6.2] - 2026-11-27
 
 ### Added

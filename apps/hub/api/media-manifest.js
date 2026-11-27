@@ -48,8 +48,10 @@ export default async function handler(req, res) {
     if (!manifest.plates) {
       manifest.plates = {};
     }
-    // Always guarantee Drops gallery is populated and served from static assets
-    manifest.plates.drops = DROPS_ALBUM;
+    // Serve dynamic Drops from crawler manifest if available; fallback to bundled static assets
+    if (!manifest.plates.drops || manifest.plates.drops.length === 0) {
+      manifest.plates.drops = DROPS_ALBUM;
+    }
 
     res.setHeader(
       "Cache-Control",

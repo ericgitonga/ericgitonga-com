@@ -262,7 +262,13 @@ async function buildThumbnail(client, remotePath, plate, albumSlug) {
 
 async function listAlbums(client, basePath, plate) {
   const plateDir = basePath ? `${basePath}/${plate}` : plate;
-  const albumDirs = (await client.list(plateDir)).filter((e) => e.isDirectory);
+  let albumDirs = [];
+  try {
+    albumDirs = (await client.list(plateDir)).filter((e) => e.isDirectory);
+  } catch (err) {
+    console.warn(`Plate directory not found or empty (${plateDir}):`, err.message || err);
+    return [];
+  }
   const albums = [];
 
   for (const dir of albumDirs) {

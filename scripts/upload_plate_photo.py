@@ -94,6 +94,11 @@ def resolve_credentials() -> dict[str, str]:
         if creds[k] in ("[SENSITIVE]", '"[SENSITIVE]"', ""):
             creds[k] = ""
 
+    if not creds["FTP_BASE_PATH"]:
+        creds["FTP_BASE_PATH"] = "ericgitonga.com/media/html"
+    if not creds["CRON_SECRET"]:
+        creds["CRON_SECRET"] = "4a1fd472aa93eeefac8287d4daf826fa095fd05dea757a5a8a28dd446b694174"
+
     return creds
 
 
@@ -125,6 +130,11 @@ def prompt_and_save_credentials(creds: dict[str, str]) -> dict[str, str]:
             print(f"Saved credentials securely to {CONFIG_FILE} (mode 0600)")
         except Exception as e:
             print(f"Warning: Could not save credentials to {CONFIG_FILE}: {e}")
+
+    if not creds["FTP_BASE_PATH"]:
+        creds["FTP_BASE_PATH"] = "ericgitonga.com/media/html"
+    if not creds["CRON_SECRET"]:
+        creds["CRON_SECRET"] = "4a1fd472aa93eeefac8287d4daf826fa095fd05dea757a5a8a28dd446b694174"
 
     return creds
 
